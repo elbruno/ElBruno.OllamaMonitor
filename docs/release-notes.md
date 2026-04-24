@@ -2,6 +2,29 @@
 
 ## Version History
 
+### 0.5.0 — NuGet Packaging and Release Automation
+
+**Release Date:** 2026-04-24
+
+This release prepares ElBruno.OllamaMonitor for repeatable NuGet publishing through GitHub Releases.
+
+#### What's New
+
+- ✅ Added NuGet-ready package metadata, including repository information and package icon support
+- ✅ Added a GitHub Actions `publish.yml` workflow based on the ElBruno.LocalLLMs release process
+- ✅ Added publishing documentation for OIDC Trusted Publishing with NuGet.org
+- ✅ Added NuGet version and download badges to the README
+- ✅ Updated the README author section to match the ElBruno.LocalLLMs style
+- ✅ Added package branding assets for the NuGet icon workflow
+
+#### Notes
+
+- The release workflow is triggered by a published GitHub Release such as `v0.5.0`
+- Successful NuGet publishing still requires the repository to be configured in NuGet Trusted Publishing
+- The application feature set remains the Phase 1 tray-monitor experience introduced earlier
+
+---
+
 ### 0.1.0 (Phase 1) — Initial Release
 
 **Release Date:** 2026-04-24
@@ -160,8 +183,9 @@ This project follows [Semantic Versioning](https://semver.org/):
 
 | Version | Release | Status | End of Support |
 |---------|---------|--------|-----------------|
-| 0.1.0   | 2026-04-24 | Active | TBD |
-| 0.2.0   | TBD    | Planned | — |
+| 0.5.0   | 2026-04-24 | Active | TBD |
+| 0.1.0   | 2026-04-24 | Shipped | TBD |
+| 0.2.0   | TBD | Planned | — |
 | 1.0.0   | TBD    | Planned | — |
 
 ---

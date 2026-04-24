@@ -1,5 +1,11 @@
 # ElBruno.OllamaMonitor
 
+[![NuGet](https://img.shields.io/nuget/v/ElBruno.OllamaMonitor.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/ElBruno.OllamaMonitor)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/ElBruno.OllamaMonitor.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/ElBruno.OllamaMonitor)
+[![Publish to NuGet](https://github.com/elbruno/ElBruno.OllamaMonitor/actions/workflows/publish.yml/badge.svg)](https://github.com/elbruno/ElBruno.OllamaMonitor/actions/workflows/publish.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
+[![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?style=flat-square&logo=dotnet)](https://dotnet.microsoft.com/)
+
 A tiny Windows system tray tool to monitor your local Ollama runtime.
 
 > Quick visual feedback about your Ollama status, resource usage, and models—right from your Windows system tray.
@@ -35,7 +41,7 @@ ollamamon
 ### From Source
 
 ```bash
-git clone https://github.com/ElBruno/ElBruno.OllamaMonitor.git
+git clone https://github.com/elbruno/ElBruno.OllamaMonitor.git
 cd ElBruno.OllamaMonitor
 dotnet build src/ElBruno.OllamaMonitor/
 dotnet run --project src/ElBruno.OllamaMonitor/
@@ -151,6 +157,7 @@ You can edit this file directly or use the CLI commands.
 - **[Architecture Guide](docs/architecture.md)** — How the app is built and organized
 - **[Configuration Guide](docs/configuration.md)** — Detailed configuration options and defaults
 - **[Development Guide](docs/development-guide.md)** — Building from source, folder structure, debugging
+- **[Publishing Guide](docs/publishing.md)** — NuGet publishing with GitHub Releases and OIDC
 - **[Troubleshooting](docs/troubleshooting.md)** — Common issues and solutions
 - **[Release Notes](docs/release-notes.md)** — Version history and changelog
 
@@ -163,7 +170,7 @@ You can edit this file directly or use the CLI commands.
 
 ## License
 
-See [LICENSE](LICENSE) for details.
+This project is licensed under the MIT License — see [LICENSE](LICENSE) for details.
 
 ## Support
 
@@ -171,6 +178,12 @@ Found a bug or have a feature request? Open an issue on GitHub.
 
 Questions about Ollama? Check the [Ollama documentation](https://github.com/ollama/ollama).
 
----
+## About the Author
 
-**Made by [El Bruno](https://elbruno.com)** — A .NET developer obsessed with local AI and productivity tools.
+**Made with ❤️ by [Bruno Capuano (ElBruno)](https://github.com/elbruno)**
+
+- 📝 **Blog**: [elbruno.com](https://elbruno.com)
+- 📺 **YouTube**: [youtube.com/elbruno](https://youtube.com/elbruno)
+- 🔗 **LinkedIn**: [linkedin.com/in/elbruno](https://linkedin.com/in/elbruno)
+- 𝕏 **Twitter**: [twitter.com/elbruno](https://twitter.com/elbruno)
+- 🎙️ **Podcast**: [notienenombre.com](https://notienenombre.com)
