@@ -24,6 +24,10 @@ Perfect for:
 - Demo presenters who want to know resource impact in real-time
 - Anyone running large models locally who's curious about the overhead
 
+## Demo
+
+![ElBruno.OllamaMonitor demo](images/ollamanitor-demo01.gif)
+
 ## Installation
 
 ### Via NuGet (Recommended)
