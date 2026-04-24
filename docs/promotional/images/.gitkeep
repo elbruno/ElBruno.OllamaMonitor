@@ -1,0 +1,25 @@
+# Images Directory
+
+Generated promotional images for ElBruno.OllamaMonitor will be stored here.
+
+See `image-prompts.md` for detailed prompts to generate these images.
+
+## Planned Images
+
+- `ollama-monitor-blog-hero.png` — Blog post hero image
+- `ollama-monitor-linkedin.png` — LinkedIn social media image
+- `ollama-monitor-twitter.png` — Twitter/X image
+- `ollama-monitor-square.png` — Square social media image
+- `ollama-monitor-logo.png` — App logo (256×256, 512×512)
+- `ollama-monitor-in-action.png` — Screenshot showing app in use
+- `ollama-monitor-banner.png` — Promotional banner
+- `ollama-monitor-icon-states.png` — Icon states showcase
+
+## How to Generate
+
+1. Use a text-to-image tool (DALL-E, Midjourney, Stable Diffusion, etc.)
+2. Copy prompts from `image-prompts.md`
+3. Generate and save images here with appropriate filenames
+4. Commit images to the repository
+
+For more details, see [Image Prompts](image-prompts.md).

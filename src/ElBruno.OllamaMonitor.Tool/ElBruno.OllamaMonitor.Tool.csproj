@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>ElBruno.OllamaMonitor.Tool</AssemblyName>
+    <RootNamespace>ElBruno.OllamaMonitor</RootNamespace>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <PackageId>ElBruno.OllamaMonitor</PackageId>
+    <Title>ElBruno.OllamaMonitor</Title>
+    <Description>Windows-first Ollama monitor global tool launcher and configuration CLI.</Description>
+    <Authors>Bruno Capuano</Authors>
+    <Company>ElBruno</Company>
+    <PackageTags>ollama;monitoring;dotnet-tool;windows</PackageTags>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>ollamamon</ToolCommandName>
+    <PackageOutputPath>..\..\artifacts\packages</PackageOutputPath>
+    <Version>0.1.0</Version>
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="GlobalUsings.cs" />
+    <Compile Include="..\ElBruno.OllamaMonitor\AppPaths.cs" Link="Shared\AppPaths.cs" />
+    <Compile Include="..\ElBruno.OllamaMonitor\Cli\*.cs" Link="Cli\%(Filename)%(Extension)" />
+    <Compile Include="..\ElBruno.OllamaMonitor\Configuration\*.cs" Link="Configuration\%(Filename)%(Extension)" />
+    <Compile Include="..\ElBruno.OllamaMonitor\Diagnostics\DiagnosticsLogService.cs" Link="Diagnostics\DiagnosticsLogService.cs" />
+    <Compile Include="..\ElBruno.OllamaMonitor\Interop\ConsoleManager.cs" Link="Interop\ConsoleManager.cs" />
+    <Compile Include="..\ElBruno.OllamaMonitor\Interop\NativeMethods.cs" Link="Interop\NativeMethods.cs" />
+  </ItemGroup>
+
+</Project>
