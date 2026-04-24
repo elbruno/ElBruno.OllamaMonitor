@@ -2,7 +2,7 @@
 
 ## Overview
 
-ElBruno.OllamaMonitor is a .NET WPF desktop application built for Windows with a system tray interface and a floating details window.
+ElBruno.OllamaMonitor is a .NET WPF desktop application built for Windows with a system tray interface, a standard details window, and a compact always-on-top mini monitor.
 
 The architecture is split into two tracks:
 
@@ -49,7 +49,8 @@ src/ElBruno.OllamaMonitor/
 ├── ViewModels/
 │   └── MainWindowViewModel.cs     # UI state, refresh logic
 ├── App.xaml / App.xaml.cs         # WPF Application entry point
-└── MainWindow.xaml / MainWindow.xaml.cs  # Floating details window
+├── MainWindow.xaml / MainWindow.xaml.cs      # Standard details window
+└── MiniMonitorWindow.xaml / .cs              # Compact always-on-top monitor
 ```
 
 ## Command Flow
@@ -76,7 +77,7 @@ LaunchTrayApplication()
   │   ├─ ProcessMetricsService
   │   ├─ NvidiaSmiMetricsService
   │   └─ OllamaStatusService (aggregates all three)
-  ├─ Create MainWindow and MainWindowViewModel
+  ├─ Create MainWindow, MiniMonitorWindow, and MainWindowViewModel
   ├─ Create TrayIconService
   ├─ Start DispatcherTimer (refresh loop)
   └─ Show window or minimize to tray (based on settings)
@@ -150,8 +151,8 @@ Key settings:
 |-----|------|---------|---------|
 | `endpoint` | string | `http://localhost:11434` | Ollama API endpoint |
 | `refreshIntervalSeconds` | int | `2` | Polling interval |
-| `startMinimizedToTray` | bool | `true` | Hide main window on startup |
-| `showFloatingWindowOnStart` | bool | `false` | Show details window on startup |
+| `startMinimizedToTray` | bool | `true` | Hide the windows on startup |
+| `showFloatingWindowOnStart` | bool | `false` | Show the details window on startup |
 | `enableGpuMetrics` | bool | `true` | Include GPU metrics |
 | `enableDiskMetrics` | bool | `true` | Include disk I/O metrics |
 | `highCpuThresholdPercent` | double | `80` | CPU% to trigger HighUsage state |
@@ -199,7 +200,7 @@ Returns GPU utilization%, VRAM used/total if available. Fails gracefully if nvid
 
 Manages system tray lifecycle, context menu, and state-driven icon updates.
 
-- Shows/hides floating window
+- Shows/hides the details window and mini monitor
 - Provides "Copy diagnostics", "Open Ollama URL", "Exit" menu items
 - Updates icon color based on `OllamaMonitorState`
 
@@ -210,7 +211,7 @@ Binds UI to `OllamaMonitorSnapshot`. Handles:
 - Status display formatting
 - Button clicks (refresh, copy, open URL)
 - Window show/hide
-- Data binding for the floating details window
+- Data binding for the details window and mini monitor
 
 ## CLI Commands
 
@@ -255,7 +256,8 @@ This places the executable in the user's PATH and creates the `ollamamon` comman
 - [ ] Build succeeds with `dotnet build`
 - [ ] App launches to tray
 - [ ] Tray icon appears and updates
-- [ ] Floating window shows real-time data
+- [ ] Details window shows real-time data
+- [ ] Mini monitor stays on top and can be dragged/closed
 - [ ] `ollamamon config` works
 - [ ] `ollamamon --help` works
 - [ ] Settings persist across restarts

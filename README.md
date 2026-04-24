@@ -55,7 +55,7 @@ dotnet run --project src/ElBruno.OllamaMonitor/
 ollamamon
 ```
 
-The app starts minimized to the tray by default. Click the tray icon to show the floating details window.
+The app starts minimized to the tray by default. Use the tray icon to open either the full details window or the always-on-top mini monitor.
 
 ### View Current Configuration
 
@@ -103,13 +103,14 @@ The tray icon color tells you the status at a glance:
 | 🟠 Orange | A model is running or high resource usage |
 | 🔴 Red   | Error or Ollama unavailable |
 
-Click the icon to open the floating details window for full diagnostics.
+Click the icon to open the full details window for diagnostics, or open the mini monitor from the tray menu to keep resource usage visible on top of other windows.
 
 ## Features
 
 - ✅ **System Tray Integration** — Runs in the background, always visible
 - ✅ **Visual Status Indicators** — Color-coded icons for quick status checks
-- ✅ **Floating Details Window** — See CPU, RAM, GPU usage, Ollama version, loaded models
+- ✅ **Standard Details Window** — A normal Windows window with minimize/close behavior that keeps the app in the tray when closed
+- ✅ **Mini Monitor Window** — A semi-transparent always-on-top compact view for CPU, RAM, GPU, and model status
 - ✅ **Local Configuration** — Customize endpoint, refresh rate, thresholds
 - ✅ **CLI Commands** — Fully scriptable configuration
 - ✅ **GPU Metrics** — Best-effort NVIDIA GPU tracking (if nvidia-smi is available)

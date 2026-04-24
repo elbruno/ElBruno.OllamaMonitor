@@ -21,6 +21,7 @@ public partial class App : System.Windows.Application
     private DispatcherTimer? _refreshTimer;
     private TrayIconService? _trayIconService;
     private MainWindow? _mainWindow;
+    private MiniMonitorWindow? _miniMonitorWindow;
     private MainWindowViewModel? _mainWindowViewModel;
 
     protected override async void OnStartup(StartupEventArgs e)
@@ -52,6 +53,8 @@ public partial class App : System.Windows.Application
         _trayIconService?.Dispose();
         _mainWindow?.PrepareForExit();
         _mainWindow?.Close();
+        _miniMonitorWindow?.PrepareForExit();
+        _miniMonitorWindow?.Close();
         _httpClient?.Dispose();
         _shutdownTokenSource.Cancel();
         _shutdownTokenSource.Dispose();
@@ -73,6 +76,7 @@ public partial class App : System.Windows.Application
         var statusService = new OllamaStatusService(ollamaClient, processMetricsService, gpuMetricsService, diagnostics);
 
         _mainWindow = new MainWindow();
+        _miniMonitorWindow = new MiniMonitorWindow();
         _mainWindowViewModel = new MainWindowViewModel(
             statusService,
             settingsService,
@@ -82,9 +86,11 @@ public partial class App : System.Windows.Application
             url => ProcessLauncher.Open(url, diagnostics));
 
         _mainWindow.DataContext = _mainWindowViewModel;
+        _miniMonitorWindow.DataContext = _mainWindowViewModel;
 
         _trayIconService = new TrayIconService(
             _mainWindow,
+            _miniMonitorWindow,
             _mainWindowViewModel,
             settingsService,
             diagnostics,

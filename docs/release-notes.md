@@ -22,6 +22,7 @@ This release prepares ElBruno.OllamaMonitor for repeatable NuGet publishing thro
 - The release workflow is triggered by a published GitHub Release such as `v0.5.0`
 - Successful NuGet publishing still requires the repository to be configured in NuGet Trusted Publishing
 - The application feature set remains the Phase 1 tray-monitor experience introduced earlier
+- The UI now includes both a standard details window and a compact always-on-top mini monitor
 
 ---
 

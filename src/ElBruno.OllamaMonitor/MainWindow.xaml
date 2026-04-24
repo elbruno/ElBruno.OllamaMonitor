@@ -1,38 +1,46 @@
-﻿<Window x:Class="ElBruno.OllamaMonitor.MainWindow"
+<Window x:Class="ElBruno.OllamaMonitor.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="ElBruno.OllamaMonitor"
+        Title="ElBruno.OllamaMonitor - Details"
         Width="760"
         Height="560"
         MinWidth="640"
         MinHeight="480"
+        ResizeMode="CanResize"
+        ShowInTaskbar="True"
         WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </Window.Resources>
     <DockPanel Margin="16">
         <StackPanel DockPanel.Dock="Top"
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Right"
                     Margin="0,0,0,16">
-            <Button Content="Refresh"
-                    Command="{Binding RefreshCommand}"
-                    Margin="0,0,8,0"
-                    Padding="14,6" />
-            <Button Content="Copy Status"
-                    Command="{Binding CopyStatusCommand}"
-                    Margin="0,0,8,0"
-                    Padding="14,6" />
-            <Button Content="Open API"
-                    Command="{Binding OpenEndpointCommand}"
-                    Margin="0,0,8,0"
-                    Padding="14,6" />
-            <Button Content="Hide"
-                    Command="{Binding HideWindowCommand}"
-                    Padding="14,6" />
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right">
+                <Button Content="Refresh"
+                        Command="{Binding RefreshCommand}"
+                        Margin="0,0,8,0"
+                        Padding="14,6" />
+                <Button Content="Copy Status"
+                        Command="{Binding CopyStatusCommand}"
+                        Margin="0,0,8,0"
+                        Padding="14,6" />
+                <Button Content="Open API"
+                        Command="{Binding OpenEndpointCommand}"
+                        Margin="0,0,8,0"
+                        Padding="14,6" />
+                <Button Content="Minimize to Tray"
+                        Command="{Binding HideWindowCommand}"
+                        Padding="14,6" />
+            </StackPanel>
+
+            <TextBlock Text="Closing this window keeps the app running in the system tray."
+                       HorizontalAlignment="Right"
+                       Foreground="#FF6B7280"
+                       Margin="0,8,0,0" />
         </StackPanel>
 
         <ScrollViewer VerticalScrollBarVisibility="Auto">

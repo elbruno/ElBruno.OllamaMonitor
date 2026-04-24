@@ -11,27 +11,32 @@ namespace ElBruno.OllamaMonitor.Services;
 public sealed class TrayIconService : IDisposable
 {
     private readonly MainWindow _mainWindow;
+    private readonly MiniMonitorWindow _miniMonitorWindow;
     private readonly MainWindowViewModel _viewModel;
     private readonly AppSettingsService _settingsService;
     private readonly DiagnosticsLogService _diagnostics;
     private readonly Action _exitAction;
     private readonly NotifyIcon _notifyIcon;
-    private readonly ToolStripMenuItem _toggleWindowMenuItem;
+    private readonly ToolStripMenuItem _toggleDetailsWindowMenuItem;
+    private readonly ToolStripMenuItem _toggleMiniWindowMenuItem;
 
     public TrayIconService(
         MainWindow mainWindow,
+        MiniMonitorWindow miniMonitorWindow,
         MainWindowViewModel viewModel,
         AppSettingsService settingsService,
         DiagnosticsLogService diagnostics,
         Action exitAction)
     {
         _mainWindow = mainWindow;
+        _miniMonitorWindow = miniMonitorWindow;
         _viewModel = viewModel;
         _settingsService = settingsService;
         _diagnostics = diagnostics;
         _exitAction = exitAction;
 
-        _toggleWindowMenuItem = new ToolStripMenuItem("Show Details", null, (_, _) => ToggleWindowVisibility());
+        _toggleDetailsWindowMenuItem = new ToolStripMenuItem("Show Details", null, (_, _) => ToggleDetailsWindowVisibility());
+        _toggleMiniWindowMenuItem = new ToolStripMenuItem("Show Mini Monitor", null, (_, _) => ToggleMiniWindowVisibility());
         _notifyIcon = new NotifyIcon
         {
             Visible = true,
@@ -44,7 +49,8 @@ public sealed class TrayIconService : IDisposable
         _notifyIcon.ContextMenuStrip.Opening += (_, _) => RefreshMenuText();
         _notifyIcon.ContextMenuStrip.Items.AddRange(
         [
-            _toggleWindowMenuItem,
+            _toggleDetailsWindowMenuItem,
+            _toggleMiniWindowMenuItem,
             new ToolStripMenuItem("Refresh", null, async (_, _) => await _viewModel.RefreshAsync(CancellationToken.None)),
             new ToolStripMenuItem("Copy Status", null, (_, _) => _viewModel.CopyStatusCommand.Execute(null)),
             new ToolStripMenuItem("Open Ollama API", null, (_, _) => _viewModel.OpenEndpointCommand.Execute(null)),
@@ -76,7 +82,7 @@ public sealed class TrayIconService : IDisposable
         _notifyIcon.Text = StatusTextHelper.BuildTooltip(snapshot);
     }
 
-    private void ToggleWindowVisibility()
+    private void ToggleDetailsWindowVisibility()
     {
         if (_mainWindow.IsVisible)
         {
@@ -85,6 +91,17 @@ public sealed class TrayIconService : IDisposable
         }
 
         ShowWindow();
+    }
+
+    private void ToggleMiniWindowVisibility()
+    {
+        if (_miniMonitorWindow.IsVisible)
+        {
+            _miniMonitorWindow.Hide();
+            return;
+        }
+
+        ShowMiniMonitorWindow();
     }
 
     private void ShowWindow()
@@ -102,8 +119,19 @@ public sealed class TrayIconService : IDisposable
         _mainWindow.Activate();
     }
 
+    private void ShowMiniMonitorWindow()
+    {
+        if (!_miniMonitorWindow.IsVisible)
+        {
+            _miniMonitorWindow.Show();
+        }
+
+        _miniMonitorWindow.Activate();
+    }
+
     private void RefreshMenuText()
     {
-        _toggleWindowMenuItem.Text = _mainWindow.IsVisible ? "Hide Details" : "Show Details";
+        _toggleDetailsWindowMenuItem.Text = _mainWindow.IsVisible ? "Hide Details" : "Show Details";
+        _toggleMiniWindowMenuItem.Text = _miniMonitorWindow.IsVisible ? "Hide Mini Monitor" : "Show Mini Monitor";
     }
 }

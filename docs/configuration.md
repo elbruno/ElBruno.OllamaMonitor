@@ -74,15 +74,15 @@ How often (in seconds) the app polls the Ollama API and system metrics.
 
 Whether the app starts minimized to the system tray (hidden from desktop).
 
-- `true`: App launches hidden; click the tray icon to show the floating window
-- `false`: App launches with the floating window visible
+- `true`: App launches hidden; use the tray icon to open the details window or mini monitor
+- `false`: App launches with the details window visible
 
 ### `showFloatingWindowOnStart`
 
 **Type:** `bool`  
 **Default:** `false`
 
-Whether to show the floating details window automatically when the app starts.
+Whether to show the standard details window automatically when the app starts.
 
 - Works independently of `startMinimizedToTray`
 - Useful if you want the details visible on startup

@@ -30,8 +30,10 @@ public sealed class MainWindowViewModel : ViewModelBase
     private string _diskReadText = "Disk Read: Unavailable";
     private string _diskWriteText = "Disk Write: Unavailable";
     private string _gpuText = "GPU: Unavailable";
+    private string _compactGpuText = "GPU: Unavailable";
     private string _gpuMemoryText = "VRAM: Unavailable";
     private string _modelsSummaryText = "No loaded models.";
+    private string _primaryModelText = "Model: No loaded models";
     private string? _errorText;
 
     public MainWindowViewModel(
@@ -140,6 +142,12 @@ public sealed class MainWindowViewModel : ViewModelBase
         private set => SetProperty(ref _gpuText, value);
     }
 
+    public string CompactGpuText
+    {
+        get => _compactGpuText;
+        private set => SetProperty(ref _compactGpuText, value);
+    }
+
     public string GpuMemoryText
     {
         get => _gpuMemoryText;
@@ -150,6 +158,12 @@ public sealed class MainWindowViewModel : ViewModelBase
     {
         get => _modelsSummaryText;
         private set => SetProperty(ref _modelsSummaryText, value);
+    }
+
+    public string PrimaryModelText
+    {
+        get => _primaryModelText;
+        private set => SetProperty(ref _primaryModelText, value);
     }
 
     public string ErrorText
@@ -206,10 +220,14 @@ public sealed class MainWindowViewModel : ViewModelBase
         DiskReadText = $"Disk Read: {StatusTextHelper.FormatBytesPerSecond(snapshot.Resources?.DiskReadBytesPerSecond)}";
         DiskWriteText = $"Disk Write: {StatusTextHelper.FormatBytesPerSecond(snapshot.Resources?.DiskWriteBytesPerSecond)}";
         GpuText = $"GPU: {(snapshot.Resources is null ? "Unavailable" : StatusTextHelper.BuildGpuSummary(snapshot.Resources))}";
+        CompactGpuText = $"GPU: {StatusTextHelper.BuildCompactGpuSummary(snapshot.Resources)}";
         GpuMemoryText = $"VRAM: {StatusTextHelper.FormatBytes(snapshot.Resources?.VramUsedBytes)} / {StatusTextHelper.FormatBytes(snapshot.Resources?.VramTotalBytes)}";
         ModelsSummaryText = snapshot.Models.Count == 0
             ? "No loaded models."
             : $"{snapshot.Models.Count} loaded model(s).";
+        PrimaryModelText = snapshot.Models.Count == 0
+            ? "Model: No loaded models"
+            : $"Model: {snapshot.Models[0].Name}";
         ErrorText = snapshot.ErrorMessage ?? string.Empty;
 
         Models.Clear();

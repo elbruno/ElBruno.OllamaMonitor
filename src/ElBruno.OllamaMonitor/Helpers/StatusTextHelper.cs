@@ -50,6 +50,26 @@ public static class StatusTextHelper
         return $"{gpuName} {FormatPercent(resources.GpuPercent)} ({FormatBytes(resources.VramUsedBytes)} / {FormatBytes(resources.VramTotalBytes)})";
     }
 
+    public static string BuildCompactGpuSummary(ResourceSnapshot? resources)
+    {
+        if (resources is null)
+        {
+            return "Unavailable";
+        }
+
+        if (!string.IsNullOrWhiteSpace(resources.GpuStatus))
+        {
+            return resources.GpuStatus;
+        }
+
+        if (resources.GpuPercent is null)
+        {
+            return "Unavailable";
+        }
+
+        return FormatPercent(resources.GpuPercent);
+    }
+
     public static string FormatPercent(double? value) => value is null ? "Unavailable" : $"{value.Value:0.#}%";
 
     public static string FormatBytes(long? value)
