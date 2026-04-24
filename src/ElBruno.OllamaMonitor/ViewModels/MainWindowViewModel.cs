@@ -34,6 +34,7 @@ public sealed class MainWindowViewModel : ViewModelBase
     private string _gpuMemoryText = "VRAM: Unavailable";
     private string _modelsSummaryText = "No loaded models.";
     private string _primaryModelText = "Model: No loaded models";
+    private string _compactModelsText = "Models: No loaded models";
     private string? _errorText;
 
     public MainWindowViewModel(
@@ -166,6 +167,12 @@ public sealed class MainWindowViewModel : ViewModelBase
         private set => SetProperty(ref _primaryModelText, value);
     }
 
+    public string CompactModelsText
+    {
+        get => _compactModelsText;
+        private set => SetProperty(ref _compactModelsText, value);
+    }
+
     public string ErrorText
     {
         get => _errorText ?? string.Empty;
@@ -228,6 +235,7 @@ public sealed class MainWindowViewModel : ViewModelBase
         PrimaryModelText = snapshot.Models.Count == 0
             ? "Model: No loaded models"
             : $"Model: {snapshot.Models[0].Name}";
+        CompactModelsText = BuildCompactModelsText(snapshot.Models);
         ErrorText = snapshot.ErrorMessage ?? string.Empty;
 
         Models.Clear();
@@ -255,5 +263,25 @@ public sealed class MainWindowViewModel : ViewModelBase
         }
 
         _openUrl(_latestSnapshot.Endpoint);
+    }
+
+    private static string BuildCompactModelsText(IReadOnlyList<OllamaModelSnapshot> models)
+    {
+        if (models.Count == 0)
+        {
+            return "Models: No loaded models";
+        }
+
+        var displayedModels = models
+            .Take(3)
+            .Select(model => model.Name)
+            .ToList();
+
+        if (models.Count > 3)
+        {
+            displayedModels.Add($"+{models.Count - 3} more");
+        }
+
+        return $"Models: {string.Join(Environment.NewLine, displayedModels)}";
     }
 }

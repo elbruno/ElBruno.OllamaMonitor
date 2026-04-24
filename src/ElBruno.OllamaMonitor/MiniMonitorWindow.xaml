@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="Ollama Mini Monitor"
-        Width="280"
-        Height="220"
+        Width="320"
+        Height="270"
         ResizeMode="NoResize"
         WindowStyle="None"
         AllowsTransparency="True"
@@ -66,7 +66,7 @@
 
             <StackPanel Grid.Row="2"
                         Margin="0,14,0,0">
-                <TextBlock Text="{Binding PrimaryModelText}"
+                <TextBlock Text="{Binding CompactModelsText}"
                            Foreground="#FFF3F4F6"
                            Margin="0,0,0,8"
                            TextWrapping="Wrap" />

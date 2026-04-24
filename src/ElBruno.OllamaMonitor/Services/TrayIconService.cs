@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 using System.Windows.Forms;
 using ElBruno.OllamaMonitor.Configuration;
 using ElBruno.OllamaMonitor.Diagnostics;
@@ -19,6 +19,7 @@ public sealed class TrayIconService : IDisposable
     private readonly NotifyIcon _notifyIcon;
     private readonly ToolStripMenuItem _toggleDetailsWindowMenuItem;
     private readonly ToolStripMenuItem _toggleMiniWindowMenuItem;
+    private readonly IReadOnlyDictionary<OllamaMonitorState, Icon> _trayIcons;
 
     public TrayIconService(
         MainWindow mainWindow,
@@ -34,6 +35,7 @@ public sealed class TrayIconService : IDisposable
         _settingsService = settingsService;
         _diagnostics = diagnostics;
         _exitAction = exitAction;
+        _trayIcons = LoadTrayIcons(diagnostics);
 
         _toggleDetailsWindowMenuItem = new ToolStripMenuItem("Show Details", null, (_, _) => ToggleDetailsWindowVisibility());
         _toggleMiniWindowMenuItem = new ToolStripMenuItem("Show Mini Monitor", null, (_, _) => ToggleMiniWindowVisibility());
@@ -41,7 +43,7 @@ public sealed class TrayIconService : IDisposable
         {
             Visible = true,
             Text = "Ollama: Starting",
-            Icon = SystemIcons.Application,
+            Icon = _trayIcons[OllamaMonitorState.NotReachable],
             ContextMenuStrip = new ContextMenuStrip()
         };
 
@@ -66,19 +68,17 @@ public sealed class TrayIconService : IDisposable
     {
         _notifyIcon.Visible = false;
         _notifyIcon.Dispose();
+        foreach (var icon in _trayIcons.Values)
+        {
+            icon.Dispose();
+        }
     }
 
     private void ApplySnapshot(OllamaMonitorSnapshot snapshot)
     {
-        _notifyIcon.Icon = snapshot.State switch
-        {
-            OllamaMonitorState.Running => SystemIcons.Information,
-            OllamaMonitorState.ModelLoaded => SystemIcons.Shield,
-            OllamaMonitorState.HighUsage => SystemIcons.Warning,
-            OllamaMonitorState.Error => SystemIcons.Error,
-            _ => SystemIcons.Error
-        };
-
+        _notifyIcon.Icon = _trayIcons.TryGetValue(snapshot.State, out var icon)
+            ? icon
+            : _trayIcons[OllamaMonitorState.NotReachable];
         _notifyIcon.Text = StatusTextHelper.BuildTooltip(snapshot);
     }
 
@@ -133,5 +133,33 @@ public sealed class TrayIconService : IDisposable
     {
         _toggleDetailsWindowMenuItem.Text = _mainWindow.IsVisible ? "Hide Details" : "Show Details";
         _toggleMiniWindowMenuItem.Text = _miniMonitorWindow.IsVisible ? "Hide Mini Monitor" : "Show Mini Monitor";
+    }
+
+    private static IReadOnlyDictionary<OllamaMonitorState, Icon> LoadTrayIcons(DiagnosticsLogService diagnostics)
+    {
+        var iconDirectory = Path.Combine(AppContext.BaseDirectory, "Assets", "TrayIcons");
+
+        return new Dictionary<OllamaMonitorState, Icon>
+        {
+            [OllamaMonitorState.NotReachable] = LoadTrayIcon(iconDirectory, "tray-gray.ico", SystemIcons.Error, diagnostics),
+            [OllamaMonitorState.Running] = LoadTrayIcon(iconDirectory, "tray-green.ico", SystemIcons.Information, diagnostics),
+            [OllamaMonitorState.ModelLoaded] = LoadTrayIcon(iconDirectory, "tray-blue.ico", SystemIcons.Shield, diagnostics),
+            [OllamaMonitorState.HighUsage] = LoadTrayIcon(iconDirectory, "tray-orange.ico", SystemIcons.Warning, diagnostics),
+            [OllamaMonitorState.Error] = LoadTrayIcon(iconDirectory, "tray-red.ico", SystemIcons.Error, diagnostics)
+        };
+    }
+
+    private static Icon LoadTrayIcon(string iconDirectory, string fileName, Icon fallback, DiagnosticsLogService diagnostics)
+    {
+        var iconPath = Path.Combine(iconDirectory, fileName);
+
+        if (!File.Exists(iconPath))
+        {
+            diagnostics.WriteInfo($"Tray icon asset not found. Using fallback icon for {fileName}.");
+            return (Icon)fallback.Clone();
+        }
+
+        using var stream = File.OpenRead(iconPath);
+        return new Icon(stream);
     }
 }
