@@ -17,6 +17,7 @@ obj/
 .vs/
 *.user
 *.suo
+*.lscache
 
 # Local NuGet publishing secret
 nuget elbruno.ollamamonitor.txt
