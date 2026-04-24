@@ -17,3 +17,6 @@ obj/
 .vs/
 *.user
 *.suo
+
+# Local NuGet publishing secret
+nuget elbruno.ollamamonitor.txt
