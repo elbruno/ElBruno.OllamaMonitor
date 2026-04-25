@@ -16,6 +16,7 @@ public sealed class MainWindowViewModel : ViewModelBase
     private readonly Action<string> _copyToClipboard;
     private readonly Action<string> _openUrl;
     private readonly SemaphoreSlim _refreshGate = new(1, 1);
+    private readonly Dictionary<string, OllamaModelSnapshot> _modelCache = new();
     private OllamaMonitorSnapshot? _latestSnapshot;
 
     private string _stateText = "Starting";
@@ -238,20 +239,53 @@ public sealed class MainWindowViewModel : ViewModelBase
         CompactModelsText = BuildCompactModelsText(snapshot.Models);
         ErrorText = snapshot.ErrorMessage ?? string.Empty;
 
-        Models.Clear();
-        foreach (var model in snapshot.Models)
+        // Update the cache with persistent models (preserves History across refreshes)
+        var currentModelNames = new HashSet<string>();
+        foreach (var newModel in snapshot.Models)
         {
+            currentModelNames.Add(newModel.Name);
+            var cachedModel = GetOrUpdateModel(newModel, snapshot.Resources);
+            
             // Feed resource data into history if this is an active model
-            if (model.IsActive && snapshot.Resources is not null)
+            if (cachedModel.IsActive && snapshot.Resources is not null)
             {
-                model.History.AddSample(
+                cachedModel.History.AddSample(
                     snapshot.Resources.CpuPercent ?? 0,
                     snapshot.Resources.MemoryGb ?? 0,
                     snapshot.Resources.GpuPercent ?? 0);
             }
-
-            Models.Add(model);
         }
+
+        // Remove stale models from cache
+        var staleKeys = _modelCache.Keys.Except(currentModelNames).ToList();
+        foreach (var staleKey in staleKeys)
+        {
+            _modelCache.Remove(staleKey);
+        }
+
+        // Populate the Models collection from cache in the same order as snapshot
+        Models.Clear();
+        foreach (var modelName in currentModelNames)
+        {
+            if (_modelCache.TryGetValue(modelName, out var cachedModel))
+            {
+                Models.Add(cachedModel);
+            }
+        }
+    }
+
+    private OllamaModelSnapshot GetOrUpdateModel(OllamaModelSnapshot newModel, ResourceSnapshot? resources)
+    {
+        if (_modelCache.TryGetValue(newModel.Name, out var existingModel))
+        {
+            // Return the cached model directly — History object is preserved
+            // (Skip property updates since record creation would reset History)
+            return existingModel;
+        }
+
+        // New model: add to cache
+        _modelCache[newModel.Name] = newModel;
+        return newModel;
     }
 
     private void CopyStatus()
