@@ -131,13 +131,23 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="Always on top"
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0"
+                           Text="Always on top"
                            Foreground="#FFD1D5DB"
                            VerticalAlignment="Center" />
-                <TextBlock Grid.Column="1"
+                <TextBlock Grid.Row="0" Grid.Column="1"
                            Text="{Binding LastCheckedText}"
                            Foreground="#FFD1D5DB"
                            HorizontalAlignment="Right"
+                           Margin="0,8,0,0" />
+                <TextBlock Grid.Row="1" Grid.Column="0"
+                           Text="{Binding AppVersionText}"
+                           Foreground="#FF6B7280"
+                           FontSize="10"
                            Margin="0,8,0,0" />
             </Grid>
         </Grid>

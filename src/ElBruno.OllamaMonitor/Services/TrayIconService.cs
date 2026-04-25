@@ -58,7 +58,7 @@ public sealed class TrayIconService : IDisposable
             new ToolStripMenuItem("Open Ollama API", null, (_, _) => _viewModel.OpenEndpointCommand.Execute(null)),
             new ToolStripMenuItem("Open Config Folder", null, (_, _) => ProcessLauncher.Open(AppPaths.RootDirectory, _diagnostics)),
             new ToolStripSeparator(),
-            new ToolStripMenuItem("Open GitHub Repository", null, (_, _) => OpenGitHubRepository()),
+            new ToolStripMenuItem("Visit HomePage", null, (_, _) => OpenGitHubRepository()),
             new ToolStripSeparator(),
             new ToolStripMenuItem("Exit", null, (_, _) => _exitAction())
         ]);

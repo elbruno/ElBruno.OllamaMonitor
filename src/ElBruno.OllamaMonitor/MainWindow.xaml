@@ -80,8 +80,12 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
 
-                        <StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="0">
                             <TextBlock Text="● Connection Status"
                                        FontSize="12"
                                        Foreground="#FFA0AEC0"
@@ -100,7 +104,7 @@
                                        FontSize="12" />
                         </StackPanel>
 
-                        <StackPanel Grid.Column="1"
+                        <StackPanel Grid.Row="0" Grid.Column="1"
                                     HorizontalAlignment="Right">
                             <TextBlock Text="Last Checked"
                                        Foreground="#FFA0AEC0"
@@ -117,6 +121,12 @@
                                        Margin="0,12,0,0"
                                        FontSize="11" />
                         </StackPanel>
+
+                        <TextBlock Grid.Row="1" Grid.Column="0"
+                                   Text="{Binding AppVersionText}"
+                                   Foreground="#FF6B7280"
+                                   FontSize="10"
+                                   Margin="0,12,0,0" />
                     </Grid>
                 </Border>
 

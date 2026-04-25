@@ -22,6 +22,7 @@ public sealed class MainWindowViewModel : ViewModelBase
     private string _stateText = "Starting";
     private string _endpoint = "http://localhost:11434";
     private string _versionText = "Version: Unavailable";
+    private string _appVersionText = "v0.5.1";
     private string _lastCheckedText = "Not checked yet";
     private string _apiReachableText = "API Reachable: Unknown";
     private string _processStatusText = "Process: Detecting";
@@ -88,6 +89,12 @@ public sealed class MainWindowViewModel : ViewModelBase
     {
         get => _versionText;
         private set => SetProperty(ref _versionText, value);
+    }
+
+    public string AppVersionText
+    {
+        get => _appVersionText;
+        private set => SetProperty(ref _appVersionText, value);
     }
 
     public string LastCheckedText
