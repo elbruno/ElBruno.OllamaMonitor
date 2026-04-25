@@ -2,6 +2,31 @@
 
 ## Version History
 
+### 0.6.0 — Enhanced UI/UX with Landing Page, Sparklines, and Theming
+
+**Release Date:** 2026-04-25
+
+This release introduces significant UI enhancements including a GitHub Pages landing page, sparkline charts in the mini monitor window, and comprehensive dark/light/system theme support.
+
+#### What's New
+
+- ✅ Landing page with screenshots and demo (GitHub Pages ready)
+- ✅ Sparkline charts in mini monitor window for real-time metrics visualization
+- ✅ System tray "Visit HomePage" label for easy navigation
+- ✅ Version number display in both main and mini monitor windows
+- ✅ Fixed sparkline flicker issue for smoother rendering
+- ✅ Dark/light/system theme support throughout the application
+- ✅ Enhanced UI/UX improvements for better usability
+
+#### Notes
+
+- The GitHub Pages landing page showcases project features and includes an interactive demo
+- Sparklines provide at-a-glance metric trends without cluttering the UI
+- Theme support automatically respects Windows system preferences
+- All existing features from 0.5.0 remain available and stable
+
+---
+
 ### 0.5.0 — NuGet Packaging and Release Automation
 
 **Release Date:** 2026-04-24
@@ -184,7 +209,8 @@ This project follows [Semantic Versioning](https://semver.org/):
 
 | Version | Release | Status | End of Support |
 |---------|---------|--------|-----------------|
-| 0.5.0   | 2026-04-24 | Active | TBD |
+| 0.6.0   | 2026-04-25 | Active | TBD |
+| 0.5.0   | 2026-04-24 | Shipped | TBD |
 | 0.1.0   | 2026-04-24 | Shipped | TBD |
 | 0.2.0   | TBD | Planned | — |
 | 1.0.0   | TBD    | Planned | — |

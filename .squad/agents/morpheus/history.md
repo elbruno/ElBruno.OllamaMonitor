@@ -89,6 +89,59 @@
 - Image prompts designed for modern AI image tools (DALL-E 3, Midjourney, etc.)
 - Release notes template in place for future versions
 
+### GitHub Pages Landing Page (2026-04-24)
+
+**Completed deliverables:**
+1. ✅ docs/index.html — Professional single-file GitHub Pages landing page
+2. ✅ docs/README.md — Documentation hub with navigation and quick links
+
+**Design decisions:**
+- **Single-file HTML with inline CSS:** No external dependencies, fast load, future-proof for GitHub Pages
+- **Responsive layout:** Mobile-first, flexbox-based grid for features section, collapsible nav on small screens
+- **Color scheme:** Blue primary (#2563eb) with professional grays, supports both light and dark modes via CSS media queries
+- **Typography:** System fonts (-apple-system, Segoe UI, etc.) for fast rendering and platform consistency
+- **Accessibility:** Good contrast ratios (WCAG AA), semantic HTML, alt text on images, readable line-height (1.6)
+
+**Content structure:**
+1. **Hero:** Title, tagline, value prop, badges (.NET 10+, Windows 10+, Real-time), dual CTAs (Get Started, GitHub)
+2. **Demo:** Embedded gif (ollamanitor-demo01.gif) with caption
+3. **Features:** 6-card grid with icons and descriptions (status, model visibility, metrics, tray, lightweight, CLI)
+4. **Installation:** 3 methods (NuGet, source, requirements), system prerequisites listed clearly
+5. **Usage Guide:** Startup, tray icon colors table, config commands, dashboard interpretation
+6. **Documentation Links:** 6-link grid pointing to configuration, architecture, dev, troubleshooting, publishing, release-notes
+7. **Footer:** Links to GitHub, NuGet, license, author
+
+**Asset decisions:**
+- Logo: Used package-icon.png from src/ElBruno.OllamaMonitor.Tool/assets/
+- Demo GIF: Referenced ../images/ollamanitor-demo01.gif (relative path from docs/)
+- No external images needed; placeholder structure for future screenshots at docs/assets/
+
+**Testing approach:**
+- Validation: Opened locally via file:// protocol (no server required)
+- Responsive: Tested layout at 1200px, 768px, 480px breakpoints
+- Accessibility: Verified contrast, semantic structure, alt text present
+- Graceful degradation: Image missing → alt text shown, CSS-only styling (no JS required)
+
+**Technical highlights:**
+- Zero JavaScript required (progressive enhancement approach)
+- Sticky header with backdrop blur for visual polish
+- CSS custom properties for theme colors (dark mode ready via prefers-color-scheme)
+- Mobile-optimized: Stack buttons vertically, reduce fonts, compress spacing
+- Fast rendering: inline CSS avoids render-blocking requests
+- SEO-ready: meta description, semantic HTML (h1/h2, ul/li, section tags)
+
+**Navigation structure:**
+- Header nav links to: Features, Install, Usage, Docs, GitHub
+- All internal links relative paths (no hardcoded domains)
+- External links open in new tab (GitHub, NuGet, Ollama)
+- Documentation grid provides quick access to 6 core guides
+
+**Tone & style:**
+- Friendly, approachable, developer-focused
+- Emphasizes speed and ease of use
+- Technical details balanced with "why" (e.g., "lightweight, always-on monitoring")
+- Emoji used sparingly for visual interest (not excessive)
+
 ---
 
-**Handoff status:** Documentation Phase 1 complete. Ready for team review and promotional launch.
+**Handoff status:** Documentation Phase 1 complete. Landing page added for GitHub Pages deployment. Ready for team review and public launch.

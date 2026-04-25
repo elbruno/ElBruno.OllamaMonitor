@@ -93,3 +93,48 @@
 ### No Blockers Encountered
 
 All tasks completed successfully with no architectural constraints or dependencies discovered. Ready for Phase 2b chart implementation.
+
+---
+
+## Screenshot Capture Session (2026-04-25 14:16)
+
+### Environment
+
+- **Ollama Version:** 0.21.2
+- **Ollama Status:** Running on localhost:11434
+- **Build Configuration:** Debug (net10.0-windows)
+- **Runtime Status:** Application launched and captured successfully
+
+### Available Models
+
+| Model | Size (GB) |
+|-------|-----------|
+| deepseek-coder-v2:16b | 8.9 |
+| gemma4:latest | 9.6 |
+| qwen2.5-coder:latest | 4.7 |
+| gpt-oss:20b | 13.8 |
+| gemma4:e2b | 7.2 |
+| llama3.2:latest | 2.0 |
+| phi4-mini:latest | 2.5 |
+| ministral-3:latest | 6.0 |
+| deepseek-r1:latest | 5.2 |
+| devstral-small-2:latest | 15.2 |
+| gpt-oss:120b | 65.4 |
+
+### Screenshots Captured
+
+| Filename | Size | Description |
+|----------|------|-------------|
+| `mini-window.png` | 140.98 KB | Compact tray monitor view (captured 14:16:54) |
+| `main-window.png` | 145.63 KB | Main expanded window showing model and metrics (captured 14:16:36) |
+| `dashboard-metrics.png` | 145.35 KB | Dashboard view with additional metrics state (captured 14:16:38) |
+
+**Location:** `docs/assets/`
+
+### Notes
+
+- All screenshots captured at full desktop resolution (1920×1080)
+- Application running with ~130 MB memory footprint
+- No errors or issues encountered during capture
+- Models were populated and ready for monitoring
+- Window icons successfully displaying in title bars (green Ollama icon)
