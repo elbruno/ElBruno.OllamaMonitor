@@ -7,4 +7,5 @@ public sealed record OllamaModelSnapshot
     public string? Processor { get; init; }
     public DateTimeOffset? ExpiresAt { get; init; }
     public string ExpiresAtDisplay => ExpiresAt?.LocalDateTime.ToString("yyyy-MM-dd HH:mm:ss") ?? "n/a";
+    public bool IsActive => ExpiresAt == null || DateTime.UtcNow < ExpiresAt.Value.UtcDateTime;
 }
