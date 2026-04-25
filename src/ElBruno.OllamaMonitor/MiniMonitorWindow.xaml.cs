@@ -12,6 +12,11 @@ public partial class MiniMonitorWindow : Window
 {
     private bool _allowClose;
     private System.Windows.Threading.DispatcherTimer? _sparklineTimer;
+    private readonly Dictionary<Canvas, (int lastCount, SolidColorBrush brush)> _canvasStates = new();
+    
+    private static readonly SolidColorBrush CpuBrush = new(System.Windows.Media.Color.FromRgb(96, 165, 250)); // #60A5FA
+    private static readonly SolidColorBrush MemBrush = new(System.Windows.Media.Color.FromRgb(167, 139, 250)); // #A78BFA
+    private static readonly SolidColorBrush GpuBrush = new(System.Windows.Media.Color.FromRgb(52, 211, 153)); // #34D399
 
     public MiniMonitorWindow()
     {
@@ -88,15 +93,24 @@ public partial class MiniMonitorWindow : Window
             {
                 if (itemsControl.Items[i] is OllamaModelSnapshot model)
                 {
-                    var cpuBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(96, 165, 250)); // #60A5FA
-                    var memBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(167, 139, 250)); // #A78BFA
-                    var gpuBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(52, 211, 153)); // #34D399
-
-                    SparklineRenderer.DrawSparkline(cpuChart, model.History.CpuSamples, cpuBrush, 80, 20);
-                    SparklineRenderer.DrawSparkline(memChart, model.History.MemorySamples, memBrush, 80, 20);
-                    SparklineRenderer.DrawSparkline(gpuChart, model.History.GpuSamples, gpuBrush, 80, 20);
+                    RedrawIfChanged(cpuChart, model.History.CpuSamples, CpuBrush, 80, 20);
+                    RedrawIfChanged(memChart, model.History.MemorySamples, MemBrush, 80, 20);
+                    RedrawIfChanged(gpuChart, model.History.GpuSamples, GpuBrush, 80, 20);
                 }
             }
         }
+    }
+
+    private void RedrawIfChanged(Canvas canvas, Queue<double> samples, SolidColorBrush brush, double width, double height)
+    {
+        int currentCount = samples.Count;
+        
+        if (_canvasStates.TryGetValue(canvas, out var state) && state.lastCount == currentCount)
+        {
+            return; // No change, skip redraw
+        }
+
+        _canvasStates[canvas] = (currentCount, brush);
+        SparklineRenderer.DrawSparkline(canvas, samples, brush, width, height);
     }
 }
