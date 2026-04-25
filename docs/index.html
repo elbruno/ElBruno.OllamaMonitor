@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Monitor your local Ollama in real time—right from your system tray. ElBruno.OllamaMonitor is a tiny Windows system tray tool for AI developers.">
+    <meta name="theme-color" content="#2563eb">
+    <title>ElBruno.OllamaMonitor — Real-Time Ollama Monitoring</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --secondary: #10b981;
+            --bg-light: #ffffff;
+            --bg-dark: #0f172a;
+            --text-light: #1e293b;
+            --text-dark: #e2e8f0;
+            --border-light: #e2e8f0;
+            --border-dark: #334155;
+            --code-bg-light: #f1f5f9;
+            --code-bg-dark: #1e293b;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: var(--bg-dark);
+                color: var(--text-dark);
+            }
+            body.light-mode {
+                background-color: var(--bg-light);
+                color: var(--text-light);
+            }
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            background-color: var(--bg-light);
+            color: var(--text-light);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        a:hover {
+            opacity: 0.8;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: var(--bg-dark);
+                color: var(--text-dark);
+            }
+            a {
+                color: #60a5fa;
+            }
+        }
+
+        /* Header & Navigation */
+        header {
+            border-bottom: 1px solid var(--border-light);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            background-color: rgba(255, 255, 255, 0.95);
+            z-index: 100;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            header {
+                background-color: rgba(15, 23, 42, 0.95);
+                border-bottom-color: var(--border-dark);
+            }
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-light);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .logo {
+                color: var(--text-dark);
+            }
+        }
+
+        .logo img {
+            width: 32px;
+            height: 32px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            nav ul {
+                gap: 1rem;
+                font-size: 0.75rem;
+            }
+        }
+
+        /* Main Container */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        section {
+            padding: 4rem 0;
+        }
+
+        @media (max-width: 768px) {
+            section {
+                padding: 2rem 0;
+            }
+            main {
+                padding: 0 1rem;
+            }
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 6rem 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .hero .tagline {
+            font-size: 1.375rem;
+            color: #666;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .hero .tagline {
+                color: #a0aec0;
+            }
+        }
+
+        .hero .value-prop {
+            font-size: 1.125rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.8;
+            color: #555;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .hero .value-prop {
+                color: #cbd5e1;
+            }
+        }
+
+        .cta-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.75rem;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .hero .tagline {
+                font-size: 1.125rem;
+            }
+            .hero .value-prop {
+                font-size: 1rem;
+            }
+        }
+
+        /* Demo Section */
+        .demo {
+            background-color: #f8fafc;
+            border-radius: 0.5rem;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .demo {
+                background-color: #1e293b;
+            }
+        }
+
+        .demo h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .demo img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .demo p {
+            font-size: 0.95rem;
+            color: #666;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .demo p {
+                color: #a0aec0;
+            }
+        }
+
+        /* Features Section */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            padding: 2rem;
+            border: 1px solid var(--border-light);
+            border-radius: 0.5rem;
+            background-color: #fafbfc;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .feature-card {
+                background-color: #1e293b;
+                border-color: var(--border-dark);
+            }
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+            color: var(--primary);
+        }
+
+        .feature-card p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .feature-card p {
+                color: #cbd5e1;
+            }
+        }
+
+        /* Installation Section */
+        .installation {
+            background-color: #f8fafc;
+            border-radius: 0.5rem;
+            padding: 3rem 2rem;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .installation {
+                background-color: #1e293b;
+            }
+        }
+
+        .installation h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .installation-method {
+            margin-bottom: 2rem;
+        }
+
+        .installation-method h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .code-block {
+            background-color: var(--code-bg-light);
+            border: 1px solid var(--border-light);
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+            font-family: "Monaco", "Courier New", monospace;
+            font-size: 0.875rem;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .code-block {
+                background-color: var(--code-bg-dark);
+                border-color: var(--border-dark);
+                color: #e2e8f0;
+            }
+        }
+
+        .code-block code {
+            color: inherit;
+        }
+
+        /* System Tray Status Table */
+        .status-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        .status-table th {
+            text-align: left;
+            padding: 0.75rem;
+            border-bottom: 2px solid var(--border-light);
+            font-weight: 600;
+            background-color: #f1f5f9;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .status-table th {
+                background-color: #334155;
+                border-bottom-color: var(--border-dark);
+            }
+        }
+
+        .status-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .status-table td {
+                border-bottom-color: var(--border-dark);
+            }
+        }
+
+        /* Troubleshooting Links */
+        .troubleshooting {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .doc-link {
+            padding: 1.5rem;
+            border: 1px solid var(--border-light);
+            border-radius: 0.5rem;
+            background-color: #fafbfc;
+            transition: all 0.2s;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .doc-link {
+                background-color: #1e293b;
+                border-color: var(--border-dark);
+            }
+        }
+
+        .doc-link:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.1);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .doc-link:hover {
+                box-shadow: 0 4px 6px rgba(96, 165, 250, 0.1);
+            }
+        }
+
+        .doc-link h3 {
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .doc-link p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .doc-link p {
+                color: #a0aec0;
+            }
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border-light);
+            padding: 2rem 0;
+            margin-top: 4rem;
+            text-align: center;
+            font-size: 0.875rem;
+            color: #666;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            footer {
+                border-top-color: var(--border-dark);
+                color: #a0aec0;
+            }
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .footer-content a {
+            font-size: 0.875rem;
+        }
+
+        /* Section Titles */
+        h2 {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            h2 {
+                color: var(--text-dark);
+            }
+        }
+
+        .section-intro {
+            font-size: 1.05rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .section-intro {
+                color: #a0aec0;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .cta-group {
+                flex-direction: column;
+                align-items: center;
+            }
+            .btn {
+                width: 100%;
+            }
+            .features {
+                grid-template-columns: 1fr;
+            }
+            .troubleshooting {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Badges */
+        .badge-group {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background-color: #e0f2fe;
+            color: #0c4a6e;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .badge {
+                background-color: #082f49;
+                color: #7dd3fc;
+            }
+        }
+
+        /* List Styles */
+        ul {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+            color: #555;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            li {
+                color: #cbd5e1;
+            }
+        }
+
+        /* Emphasis */
+        .highlight {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .emoji {
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">
+                <img src="../src/ElBruno.OllamaMonitor.Tool/assets/package-icon.png" alt="ElBruno.OllamaMonitor logo" width="32" height="32">
+                <span>OllamaMonitor</span>
+            </div>
+            <ul>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#installation">Install</a></li>
+                <li><a href="#usage">Usage</a></li>
+                <li><a href="#docs">Docs</a></li>
+                <li><a href="https://github.com/elbruno/ElBruno.OllamaMonitor" target="_blank">GitHub</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1>ElBruno.OllamaMonitor</h1>
+            <p class="tagline">Monitor your local Ollama in real time—right from your system tray</p>
+            <p class="value-prop">
+                A tiny Windows system tray tool that gives you instant visual feedback about your Ollama status, resource usage, and models. Perfect for developers who need to see what's happening under the hood.
+            </p>
+            <div class="badge-group">
+                <span class="badge">💾 .NET 10+</span>
+                <span class="badge">🪟 Windows 10+</span>
+                <span class="badge">🚀 Real-time Monitoring</span>
+            </div>
+            <div class="cta-group">
+                <a href="#installation" class="btn btn-primary">Get Started</a>
+                <a href="https://github.com/elbruno/ElBruno.OllamaMonitor" target="_blank" class="btn btn-secondary">View on GitHub</a>
+            </div>
+        </section>
+
+        <!-- Demo Section -->
+        <section class="demo">
+            <h2>See It in Action</h2>
+            <img src="../images/ollamanitor-demo01.gif" alt="Real-time system resource monitoring" loading="lazy">
+            <p><strong>Real-time system resource monitoring</strong> — CPU, RAM, GPU usage at a glance from your tray</p>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features">
+            <h2>Features</h2>
+            <p class="section-intro">Everything you need to monitor Ollama without cluttering your desktop.</p>
+            <div class="features">
+                <div class="feature-card">
+                    <h3>🔍 Status at a Glance</h3>
+                    <p>Color-coded system tray icon tells you instantly if Ollama is running, a model is loaded, or there's an error.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>⚙️ Model Visibility</h3>
+                    <p>See which model is currently loaded and active, directly in the monitor window.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>📊 Real-Time Metrics</h3>
+                    <p>CPU, RAM, and GPU usage graphs with sparklines show you exactly how much your model is demanding.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🪟 System Tray Integration</h3>
+                    <p>Runs quietly in your tray. Click to see details, or use the mini monitor window to keep metrics on top.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>⚡ Lightweight & Always-On</h3>
+                    <p>Minimal overhead. Starts minimized, configurable refresh rate, and zero fuss.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🛠️ CLI Configuration</h3>
+                    <p>Change endpoints, refresh intervals, and thresholds from the command line. Fully scriptable.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Installation Section -->
+        <section id="installation" class="installation">
+            <h2>Installation</h2>
+            <p class="section-intro">Choose your preferred installation method.</p>
+
+            <div class="installation-method">
+                <h3>📦 Via NuGet (Recommended)</h3>
+                <p>Install the global dotnet tool:</p>
+                <div class="code-block"><code>dotnet tool install --global ElBruno.OllamaMonitor</code></div>
+                <p>Then launch anytime:</p>
+                <div class="code-block"><code>ollamamon</code></div>
+            </div>
+
+            <div class="installation-method">
+                <h3>🔨 From Source</h3>
+                <p>Clone the repository and build:</p>
+                <div class="code-block"><code>git clone https://github.com/elbruno/ElBruno.OllamaMonitor.git<br>cd ElBruno.OllamaMonitor<br>dotnet build src/ElBruno.OllamaMonitor/<br>dotnet run --project src/ElBruno.OllamaMonitor/</code></div>
+            </div>
+
+            <div class="installation-method">
+                <h3>✅ System Requirements</h3>
+                <ul>
+                    <li><strong>Windows 10 / Windows 11</strong> (requires .NET 10 runtime)</li>
+                    <li><strong>Ollama</strong> running locally (<a href="https://ollama.ai" target="_blank">download here</a>)</li>
+                    <li><strong>.NET 10 SDK</strong> (to build from source)</li>
+                    <li><strong>NVIDIA GPU drivers</strong> (optional, for GPU metrics)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Usage Guide Section -->
+        <section id="usage">
+            <h2>Usage Guide</h2>
+            <p class="section-intro">Get the most out of ElBruno.OllamaMonitor.</p>
+
+            <div style="margin-bottom: 2rem;">
+                <h3 style="color: var(--primary); margin-bottom: 1rem;">Starting the App</h3>
+                <p style="margin-bottom: 1rem;">After installation, launch with:</p>
+                <div class="code-block"><code>ollamamon</code></div>
+                <p>The app starts minimized to the tray by default. Click the tray icon to open the full details window, or use the tray menu to open the always-on-top mini monitor.</p>
+            </div>
+
+            <div style="margin-bottom: 2rem;">
+                <h3 style="color: var(--primary); margin-bottom: 1rem;">Understanding the Tray Icon</h3>
+                <p style="margin-bottom: 1rem;">The icon color tells you the status at a glance:</p>
+                <table class="status-table">
+                    <thead>
+                        <tr>
+                            <th>Color</th>
+                            <th>Meaning</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>🟤 Gray</td>
+                            <td>Ollama is not reachable</td>
+                        </tr>
+                        <tr>
+                            <td>🟢 Green</td>
+                            <td>Ollama is running, no model loaded</td>
+                        </tr>
+                        <tr>
+                            <td>🔵 Blue</td>
+                            <td>A model is currently loaded</td>
+                        </tr>
+                        <tr>
+                            <td>🟠 Orange</td>
+                            <td>A model is running or high resource usage</td>
+                        </tr>
+                        <tr>
+                            <td>🔴 Red</td>
+                            <td>Error or Ollama unavailable</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="margin-bottom: 2rem;">
+                <h3 style="color: var(--primary); margin-bottom: 1rem;">Configuration Commands</h3>
+                <p style="margin-bottom: 1rem;"><strong>View current configuration:</strong></p>
+                <div class="code-block"><code>ollamamon config</code></div>
+
+                <p style="margin-top: 1rem; margin-bottom: 1rem;"><strong>Change Ollama endpoint:</strong></p>
+                <div class="code-block"><code>ollamamon config set endpoint http://192.168.1.100:11434</code></div>
+
+                <p style="margin-top: 1rem; margin-bottom: 1rem;"><strong>Adjust refresh interval (seconds):</strong></p>
+                <div class="code-block"><code>ollamamon config set refresh-interval 5</code></div>
+
+                <p style="margin-top: 1rem; margin-bottom: 1rem;"><strong>Reset to defaults:</strong></p>
+                <div class="code-block"><code>ollamamon config reset</code></div>
+            </div>
+
+            <div style="margin-bottom: 2rem;">
+                <h3 style="color: var(--primary); margin-bottom: 1rem;">Reading the Dashboard</h3>
+                <ul>
+                    <li><strong>Ollama Status:</strong> Displays the connection status and available API endpoint</li>
+                    <li><strong>Current Model:</strong> Shows which model is loaded (or "none" if idle)</li>
+                    <li><strong>Metrics Sparklines:</strong> CPU, RAM, and GPU graphs update in real-time</li>
+                    <li><strong>Resource Usage:</strong> Peak and current values help you understand the overhead</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Documentation Links -->
+        <section id="docs">
+            <h2>Documentation</h2>
+            <p class="section-intro">Dive deeper with our comprehensive guides.</p>
+            <div class="troubleshooting">
+                <div class="doc-link">
+                    <h3>📋 Configuration Guide</h3>
+                    <p>Detailed configuration options, default values, and advanced settings.</p>
+                    <a href="configuration.md">Read more →</a>
+                </div>
+                <div class="doc-link">
+                    <h3>🏗️ Architecture Guide</h3>
+                    <p>How the app is built, component structure, and design decisions.</p>
+                    <a href="architecture.md">Read more →</a>
+                </div>
+                <div class="doc-link">
+                    <h3>👨‍💻 Development Setup</h3>
+                    <p>Build from source, folder structure, and debugging tips.</p>
+                    <a href="development-guide.md">Read more →</a>
+                </div>
+                <div class="doc-link">
+                    <h3>🚨 Troubleshooting</h3>
+                    <p>Common issues, solutions, and when to check logs.</p>
+                    <a href="troubleshooting.md">Read more →</a>
+                </div>
+                <div class="doc-link">
+                    <h3>📦 Publishing Guide</h3>
+                    <p>How releases work, NuGet publishing, and OIDC setup.</p>
+                    <a href="publishing.md">Read more →</a>
+                </div>
+                <div class="doc-link">
+                    <h3>📝 Release Notes</h3>
+                    <p>Version history, changelog, and upgrade notes.</p>
+                    <a href="release-notes.md">Read more →</a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <a href="https://github.com/elbruno/ElBruno.OllamaMonitor" target="_blank">GitHub</a>
+            <a href="https://www.nuget.org/packages/ElBruno.OllamaMonitor" target="_blank">NuGet Package</a>
+            <span>MIT License</span>
+            <a href="https://github.com/elbruno" target="_blank">@ElBruno</a>
+        </div>
+        <p>Made with ❤️ for the local AI community</p>
+    </footer>
+
+</body>
+</html>
