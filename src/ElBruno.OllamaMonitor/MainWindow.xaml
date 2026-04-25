@@ -16,74 +16,106 @@
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </Window.Resources>
-    <DockPanel Margin="16">
+    <DockPanel Margin="20">
         <StackPanel DockPanel.Dock="Top"
-                    Margin="0,0,0,16">
+                    Margin="0,0,0,20">
             <StackPanel Orientation="Horizontal"
-                        HorizontalAlignment="Right">
+                        HorizontalAlignment="Right"
+                        Margin="0,0,0,12">
+                <Label Content="Theme:"
+                       VerticalAlignment="Center"
+                       Margin="0,0,6,0"
+                       Foreground="#FFD1D5DB" />
+                <ComboBox x:Name="ThemeSelector"
+                          Width="100"
+                          Margin="0,0,12,0"
+                          SelectionChanged="ThemeSelector_SelectionChanged"
+                          Background="#1F2937"
+                          Foreground="White">
+                    <ComboBoxItem>Light</ComboBoxItem>
+                    <ComboBoxItem>Dark</ComboBoxItem>
+                    <ComboBoxItem>System</ComboBoxItem>
+                </ComboBox>
                 <Button Content="Refresh"
                         Command="{Binding RefreshCommand}"
                         Margin="0,0,8,0"
-                        Padding="14,6" />
+                        Padding="14,6"
+                        Background="#0E639C"
+                        Foreground="White" />
                 <Button Content="Copy Status"
                         Command="{Binding CopyStatusCommand}"
                         Margin="0,0,8,0"
-                        Padding="14,6" />
+                        Padding="14,6"
+                        Background="#0E639C"
+                        Foreground="White" />
                 <Button Content="Open API"
                         Command="{Binding OpenEndpointCommand}"
                         Margin="0,0,8,0"
-                        Padding="14,6" />
+                        Padding="14,6"
+                        Background="#0E639C"
+                        Foreground="White" />
                 <Button Content="Minimize to Tray"
                         Command="{Binding HideWindowCommand}"
-                        Padding="14,6" />
+                        Padding="14,6"
+                        Background="#0E639C"
+                        Foreground="White" />
             </StackPanel>
 
             <TextBlock Text="Closing this window keeps the app running in the system tray."
                        HorizontalAlignment="Right"
                        Foreground="#FF6B7280"
-                       Margin="0,8,0,0" />
+                       FontSize="11" />
         </StackPanel>
 
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <StackPanel>
                 <Border Background="#FF1F2937"
+                        BorderBrush="#FF374151"
+                        BorderThickness="1"
                         CornerRadius="8"
                         Padding="16"
-                        Margin="0,0,0,16">
+                        Margin="0,0,0,20">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
+
                         <StackPanel>
-                            <TextBlock Text="Ollama Status"
-                                       FontSize="20"
-                                       FontWeight="SemiBold"
-                                       Foreground="White" />
+                            <TextBlock Text="● Connection Status"
+                                       FontSize="12"
+                                       Foreground="#FFA0AEC0"
+                                       Margin="0,0,0,8" />
                             <TextBlock Text="{Binding StateText}"
                                        FontSize="28"
                                        FontWeight="Bold"
-                                       Foreground="White"
-                                       Margin="0,8,0,0" />
+                                       Foreground="White" />
+                            <TextBlock Text="{Binding ApiReachableText}"
+                                       Foreground="#FFD1D5DB"
+                                       Margin="0,8,0,0"
+                                       FontSize="12" />
                             <TextBlock Text="{Binding Endpoint}"
                                        Foreground="#FFD1D5DB"
-                                       Margin="0,8,0,0" />
+                                       Margin="0,4,0,0"
+                                       FontSize="12" />
                         </StackPanel>
 
                         <StackPanel Grid.Column="1"
                                     HorizontalAlignment="Right">
-                            <TextBlock Text="Last checked"
-                                       Foreground="#FFD1D5DB"
-                                       HorizontalAlignment="Right" />
+                            <TextBlock Text="Last Checked"
+                                       Foreground="#FFA0AEC0"
+                                       HorizontalAlignment="Right"
+                                       FontSize="11" />
                             <TextBlock Text="{Binding LastCheckedText}"
                                        FontWeight="SemiBold"
                                        Foreground="White"
                                        HorizontalAlignment="Right"
-                                       Margin="0,8,0,0" />
+                                       Margin="0,4,0,0" />
                             <TextBlock Text="{Binding VersionText}"
                                        Foreground="#FFD1D5DB"
                                        HorizontalAlignment="Right"
-                                       Margin="0,16,0,0" />
+                                       Margin="0,12,0,0"
+                                       FontSize="11" />
                         </StackPanel>
                     </Grid>
                 </Border>
@@ -93,48 +125,82 @@
                         BorderThickness="1"
                         CornerRadius="8"
                         Padding="12"
-                        Margin="0,0,0,16"
+                        Margin="0,0,0,20"
                         Visibility="{Binding HasError, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <TextBlock Text="{Binding ErrorText}"
                                Foreground="#FF991B1B"
-                               TextWrapping="Wrap" />
+                               TextWrapping="Wrap"
+                               FontSize="11" />
                 </Border>
 
-                <Grid Margin="0,0,0,16">
+                <Grid Margin="0,0,0,20">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
-                    <GroupBox Header="Runtime"
-                              Margin="0,0,8,0">
+                    <GroupBox Header="System Metrics"
+                              Margin="0,0,8,0"
+                              Background="#FF0F172A"
+                              BorderBrush="#FF1F2937"
+                              Foreground="#FFFFFFFF">
                         <StackPanel Margin="8">
-                            <TextBlock Text="{Binding ApiReachableText}" Margin="0,0,0,8" />
-                            <TextBlock Text="{Binding ProcessStatusText}" Margin="0,0,0,8" />
-                            <TextBlock Text="{Binding CpuText}" Margin="0,0,0,8" />
-                            <TextBlock Text="{Binding MemoryText}" Margin="0,0,0,8" />
-                            <TextBlock Text="{Binding PrivateMemoryText}" Margin="0,0,0,8" />
-                            <TextBlock Text="{Binding DiskReadText}" Margin="0,0,0,8" />
-                            <TextBlock Text="{Binding DiskWriteText}" />
+                            <TextBlock Text="{Binding ProcessStatusText}"
+                                       Margin="0,0,0,8"
+                                       FontSize="11" />
+                            <TextBlock Text="{Binding CpuText}"
+                                       Margin="0,0,0,8"
+                                       FontSize="11"
+                                       FontWeight="SemiBold"
+                                       Foreground="#FF60A5FA" />
+                            <TextBlock Text="{Binding MemoryText}"
+                                       Margin="0,0,0,8"
+                                       FontSize="11"
+                                       FontWeight="SemiBold"
+                                       Foreground="#FFA78BFA" />
+                            <TextBlock Text="{Binding PrivateMemoryText}"
+                                       Margin="0,0,0,8"
+                                       FontSize="11" />
+                            <TextBlock Text="{Binding DiskReadText}"
+                                       Margin="0,0,0,8"
+                                       FontSize="11" />
+                            <TextBlock Text="{Binding DiskWriteText}"
+                                       FontSize="11" />
                         </StackPanel>
                     </GroupBox>
 
-                    <GroupBox Header="GPU"
+                    <GroupBox Header="GPU Status"
                               Grid.Column="1"
-                              Margin="8,0,0,0">
+                              Margin="8,0,0,0"
+                              Background="#FF0F172A"
+                              BorderBrush="#FF1F2937"
+                              Foreground="#FFFFFFFF">
                         <StackPanel Margin="8">
-                            <TextBlock Text="{Binding GpuText}" Margin="0,0,0,8" />
-                            <TextBlock Text="{Binding GpuMemoryText}" />
+                            <TextBlock Text="{Binding GpuText}"
+                                       Margin="0,0,0,8"
+                                       FontSize="11"
+                                       TextWrapping="Wrap"
+                                       FontWeight="SemiBold"
+                                       Foreground="#FF34D399" />
+                            <TextBlock Text="{Binding GpuMemoryText}"
+                                       FontSize="11" />
                         </StackPanel>
                     </GroupBox>
                 </Grid>
 
-                <GroupBox Header="Loaded Models">
+                <GroupBox Header="Loaded Models"
+                          Background="#FF0F172A"
+                          BorderBrush="#FF1F2937"
+                          Foreground="#FFFFFFFF">
                     <DockPanel Margin="8">
                         <TextBlock DockPanel.Dock="Top"
                                    Text="{Binding ModelsSummaryText}"
-                                   Margin="0,0,0,8" />
-                        <ListView ItemsSource="{Binding Models}">
+                                   Margin="0,0,0,12"
+                                   FontSize="11"
+                                   Foreground="#FFA0AEC0" />
+                        <ListView ItemsSource="{Binding Models}"
+                                  Background="#FF1F2937"
+                                  Foreground="#FFFFFFFF">
                             <ListView.View>
                                 <GridView>
                                     <GridViewColumn Header="Name"
