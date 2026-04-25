@@ -67,19 +67,51 @@
 
             <StackPanel Grid.Row="2"
                         Margin="0,14,0,0">
-                <ItemsControl ItemsSource="{Binding Models}"
+                <ItemsControl x:Name="ItemsControlModels"
+                              ItemsSource="{Binding Models}"
                               Margin="0,0,0,8">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Foreground="#FFF3F4F6"
-                                       FontSize="14"
-                                       Margin="0,0,0,2">
-                                <TextBlock.Inlines>
-                                    <Run Text="● "
-                                         Foreground="{Binding IsActive, Converter={StaticResource BoolToColorConverter}}" />
-                                    <Run Text="{Binding Name}" />
-                                </TextBlock.Inlines>
-                            </TextBlock>
+                            <Grid Margin="0,0,0,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="80" />
+                                    <ColumnDefinition Width="80" />
+                                    <ColumnDefinition Width="80" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Foreground="#FFF3F4F6"
+                                           FontSize="12"
+                                           VerticalAlignment="Center"
+                                           MinWidth="100">
+                                    <TextBlock.Inlines>
+                                        <Run Text="● "
+                                             Foreground="{Binding IsActive, Converter={StaticResource BoolToColorConverter}}" />
+                                        <Run Text="{Binding Name}" />
+                                    </TextBlock.Inlines>
+                                </TextBlock>
+
+                                <Canvas Grid.Column="1"
+                                        Width="80"
+                                        Height="20"
+                                        Margin="4,0,0,0"
+                                        Background="#1A1A2E"
+                                        x:Name="CpuChart" />
+
+                                <Canvas Grid.Column="2"
+                                        Width="80"
+                                        Height="20"
+                                        Margin="4,0,0,0"
+                                        Background="#1A1A2E"
+                                        x:Name="MemChart" />
+
+                                <Canvas Grid.Column="3"
+                                        Width="80"
+                                        Height="20"
+                                        Margin="4,0,0,0"
+                                        Background="#1A1A2E"
+                                        x:Name="GpuChart" />
+                            </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>

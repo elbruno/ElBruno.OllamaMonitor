@@ -241,6 +241,15 @@ public sealed class MainWindowViewModel : ViewModelBase
         Models.Clear();
         foreach (var model in snapshot.Models)
         {
+            // Feed resource data into history if this is an active model
+            if (model.IsActive && snapshot.Resources is not null)
+            {
+                model.History.AddSample(
+                    snapshot.Resources.CpuPercent ?? 0,
+                    snapshot.Resources.MemoryGb ?? 0,
+                    snapshot.Resources.GpuPercent ?? 0);
+            }
+
             Models.Add(model);
         }
     }
