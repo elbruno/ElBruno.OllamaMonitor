@@ -145,3 +145,32 @@
 ---
 
 **Handoff status:** Documentation Phase 1 complete. Landing page added for GitHub Pages deployment. Ready for team review and public launch.
+
+## Phase 2 Documentation Cleanup (2026-04-25)
+
+**Audit findings:**
+- ✅ System Tray Status section (lines 98-110) verified: Uses actual .ico files (tray-gray, tray-green, tray-blue, tray-orange, tray-red), descriptions accurate
+- ✅ Configuration section moved: Consolidated to one-liner pointing to docs/configuration.md
+- ✅ Quick Start simplified: Removed config commands, kept only: launch → check status → optional configure
+- ✅ Promotional content reorganized: Moved from separate section to subsection under Documentation
+
+**Changes made to README.md:**
+1. **Quick Start (lines 54-66):** Reduced from ~40 lines to 3 core steps
+   - Launch app
+   - Check tray icon color
+   - Link to Configuration Guide for detailed setup
+2. **Configuration (line 104-106):** Condensed from ~25 lines JSON example + explanations to 1-line reference
+3. **Documentation section (lines 108-123):** Reorganized promotional materials as subsection ("If you'd like to share this project:")
+   - Kept all links functional (relative paths)
+   - Better visual hierarchy
+
+**Consolidation results:**
+- README reduced from 195 → 144 lines (26% reduction)
+- Improved scannability: Users see big picture fast, find details in dedicated docs
+- Configuration Guide (docs/configuration.md) remains comprehensive: file location, all options, CLI commands, troubleshooting
+
+**Quality assurance:**
+- ✅ All internal links tested (relative paths to docs/)
+- ✅ Emoji status table verified against actual tray icon files
+- ✅ No information lost (just reorganized)
+- ✅ Consistent with team style guide (friendly, practical, developer-focused)

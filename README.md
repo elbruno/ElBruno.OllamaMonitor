@@ -53,47 +53,17 @@ dotnet run --project src/ElBruno.OllamaMonitor/
 
 ## Quick Start
 
-### Launch the App
+1. **Launch the app:**
+   ```bash
+   ollamamon
+   ```
+   The app starts minimized to the tray. Click the icon to open the details window or mini monitor.
 
-```bash
-ollamamon
-```
+2. **Check your status:**
+   Look at the tray icon color—it tells you Ollama's status at a glance.
 
-The app starts minimized to the tray by default. Use the tray icon to open either the full details window or the always-on-top mini monitor.
-
-### View Current Configuration
-
-```bash
-ollamamon config
-```
-
-### Change the Ollama Endpoint
-
-If you're running Ollama on a different machine or port:
-
-```bash
-ollamamon config set endpoint http://192.168.1.100:11434
-```
-
-### Adjust Refresh Interval
-
-Control how often the app polls Ollama (in seconds, default is 2):
-
-```bash
-ollamamon config set refresh-interval 5
-```
-
-### Reset to Defaults
-
-```bash
-ollamamon config reset
-```
-
-### Get Help
-
-```bash
-ollamamon --help
-```
+3. **Configure (optional):**
+   See [Configuration Guide](docs/configuration.md) for endpoint, refresh rate, and threshold settings.
 
 ## System Tray Status
 
@@ -133,45 +103,24 @@ Optional:
 
 ## Configuration
 
-Configuration is stored at:
-
-```
-%LOCALAPPDATA%\ElBruno\OllamaMonitor\settings.json
-```
-
-Default values:
-
-```json
-{
-  "endpoint": "http://localhost:11434",
-  "refreshIntervalSeconds": 2,
-  "startMinimizedToTray": true,
-  "showFloatingWindowOnStart": false,
-  "enableGpuMetrics": true,
-  "enableDiskMetrics": true,
-  "highCpuThresholdPercent": 80,
-  "highMemoryThresholdGb": 16,
-  "highGpuThresholdPercent": 85
-}
-```
-
-You can edit this file directly or use the CLI commands.
+See [Configuration Guide](docs/configuration.md) for detailed setup, CLI commands, custom thresholds, and advanced options like remote Ollama monitoring.
 
 ## Documentation
 
 - **[Architecture Guide](docs/architecture.md)** — How the app is built and organized
-- **[Configuration Guide](docs/configuration.md)** — Detailed configuration options and defaults
+- **[Configuration Guide](docs/configuration.md)** — Detailed configuration, CLI commands, and advanced setup
 - **[Development Guide](docs/development-guide.md)** — Building from source, folder structure, debugging
 - **[Publishing Guide](docs/publishing.md)** — NuGet publishing with GitHub Releases and OIDC
 - **[Troubleshooting](docs/troubleshooting.md)** — Common issues and solutions
 - **[Release Notes](docs/release-notes.md)** — Version history and changelog
 
-## Promotional Content
+### Promotional Materials
 
-- **[Blog Post](docs/promotional/blog-post.md)** — Full-length article about the tool
+If you'd like to share this project:
+- **[Blog Post](docs/promotional/blog-post.md)** — Full-length article
 - **[LinkedIn Post](docs/promotional/linkedin-post.md)** — Social media ready
-- **[Twitter Post](docs/promotional/twitter-post.md)** — X-ready snippet
-- **[Image Prompts](docs/promotional/image-prompts.md)** — AI image generation prompts for graphics
+- **[Twitter Post](docs/promotional/twitter-post.md)** — X-ready snippets
+- **[Image Prompts](docs/promotional/image-prompts.md)** — AI image generation prompts
 
 ## License
 
