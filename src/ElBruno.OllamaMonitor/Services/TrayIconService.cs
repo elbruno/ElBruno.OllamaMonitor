@@ -58,6 +58,8 @@ public sealed class TrayIconService : IDisposable
             new ToolStripMenuItem("Open Ollama API", null, (_, _) => _viewModel.OpenEndpointCommand.Execute(null)),
             new ToolStripMenuItem("Open Config Folder", null, (_, _) => ProcessLauncher.Open(AppPaths.RootDirectory, _diagnostics)),
             new ToolStripSeparator(),
+            new ToolStripMenuItem("Open GitHub Repository", null, (_, _) => OpenGitHubRepository()),
+            new ToolStripSeparator(),
             new ToolStripMenuItem("Exit", null, (_, _) => _exitAction())
         ]);
 
@@ -133,6 +135,22 @@ public sealed class TrayIconService : IDisposable
     {
         _toggleDetailsWindowMenuItem.Text = _mainWindow.IsVisible ? "Hide Details" : "Show Details";
         _toggleMiniWindowMenuItem.Text = _miniMonitorWindow.IsVisible ? "Hide Mini Monitor" : "Show Mini Monitor";
+    }
+
+    private void OpenGitHubRepository()
+    {
+        try
+        {
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = "https://github.com/elbruno/ElBruno.OllamaMonitor",
+                UseShellExecute = true
+            });
+        }
+        catch (Exception ex)
+        {
+            _diagnostics.WriteError("Failed to open GitHub repository.", ex);
+        }
     }
 
     private static IReadOnlyDictionary<OllamaMonitorState, Icon> LoadTrayIcons(DiagnosticsLogService diagnostics)

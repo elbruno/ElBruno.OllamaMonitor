@@ -34,6 +34,10 @@ public partial class App : System.Windows.Application
         _diagnostics = new DiagnosticsLogService(AppPaths.LogsDirectoryPath);
         RegisterGlobalExceptionHandlers(_diagnostics);
 
+        // Initialize theme
+        var savedTheme = ThemeService.GetSavedThemePreference();
+        ThemeService.ApplyTheme(savedTheme);
+
         _diagnostics.WriteInfo("Application startup.");
 
         var command = _commandParser.Parse(e.Args);

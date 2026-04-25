@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ElBruno.OllamaMonitor.Helpers"
         mc:Ignorable="d"
         Title="Ollama Mini Monitor"
         Width="320"
@@ -13,7 +14,11 @@
         Background="Transparent"
         ShowInTaskbar="False"
         Topmost="True"
+        Icon="Assets/TrayIcons/tray-green.ico"
         WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <local:BoolToColorConverter x:Key="BoolToColorConverter" />
+    </Window.Resources>
     <Border Background="#D91F2937"
             BorderBrush="#66FFFFFF"
             BorderThickness="1"
@@ -34,15 +39,11 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <StackPanel>
-                    <TextBlock Text="Ollama Mini Monitor"
-                               Foreground="White"
-                               FontWeight="SemiBold"
-                               FontSize="16" />
-                    <TextBlock Text="Always on top"
-                               Foreground="#FFD1D5DB"
-                               Margin="0,4,0,0" />
-                </StackPanel>
+                <TextBlock Text="Ollama Mini Monitor"
+                           Foreground="White"
+                           FontWeight="SemiBold"
+                           FontSize="16"
+                           VerticalAlignment="Center" />
 
                 <Button Grid.Column="1"
                         Click="OnCloseClicked"
@@ -66,10 +67,54 @@
 
             <StackPanel Grid.Row="2"
                         Margin="0,14,0,0">
-                <TextBlock Text="{Binding CompactModelsText}"
-                           Foreground="#FFF3F4F6"
-                           Margin="0,0,0,8"
-                           TextWrapping="Wrap" />
+                <ItemsControl x:Name="ItemsControlModels"
+                              ItemsSource="{Binding Models}"
+                              Margin="0,0,0,8">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="0,0,0,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="80" />
+                                    <ColumnDefinition Width="80" />
+                                    <ColumnDefinition Width="80" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Foreground="#FFF3F4F6"
+                                           FontSize="12"
+                                           VerticalAlignment="Center"
+                                           MinWidth="100">
+                                    <TextBlock.Inlines>
+                                        <Run Text="● "
+                                             Foreground="{Binding IsActive, Converter={StaticResource BoolToColorConverter}}" />
+                                        <Run Text="{Binding Name}" />
+                                    </TextBlock.Inlines>
+                                </TextBlock>
+
+                                <Canvas Grid.Column="1"
+                                        Width="80"
+                                        Height="20"
+                                        Margin="4,0,0,0"
+                                        Background="#1A1A2E"
+                                        x:Name="CpuChart" />
+
+                                <Canvas Grid.Column="2"
+                                        Width="80"
+                                        Height="20"
+                                        Margin="4,0,0,0"
+                                        Background="#1A1A2E"
+                                        x:Name="MemChart" />
+
+                                <Canvas Grid.Column="3"
+                                        Width="80"
+                                        Height="20"
+                                        Margin="4,0,0,0"
+                                        Background="#1A1A2E"
+                                        x:Name="GpuChart" />
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
                 <TextBlock Text="{Binding CpuText}"
                            Foreground="#FFF3F4F6"
                            Margin="0,0,0,6" />
@@ -81,11 +126,20 @@
                            TextWrapping="Wrap" />
             </StackPanel>
 
-            <TextBlock Grid.Row="3"
-                       Text="{Binding LastCheckedText}"
-                       Foreground="#FFD1D5DB"
-                       HorizontalAlignment="Right"
-                       Margin="0,8,0,0" />
+            <Grid Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Always on top"
+                           Foreground="#FFD1D5DB"
+                           VerticalAlignment="Center" />
+                <TextBlock Grid.Column="1"
+                           Text="{Binding LastCheckedText}"
+                           Foreground="#FFD1D5DB"
+                           HorizontalAlignment="Right"
+                           Margin="0,8,0,0" />
+            </Grid>
         </Grid>
     </Border>
 </Window>

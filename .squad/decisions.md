@@ -96,6 +96,113 @@
 
 ---
 
+## Phase 2 Sprint Planning
+
+### Decision: Sprint Backlog Triage & Prioritization
+**Author:** Neo (Lead Architect)
+**Date:** 2026-04-25
+**Status:** Approved
+
+Comprehensive 5-tier sprint breakdown completed:
+- **TIER 1 (Critical):** Squad state merge (T1.1), docs cleanup (T1.2)
+- **TIER 2 (UI/UX):** Mini monitor improvements (T2.1-T2.5), details window, themes, tray menu (T2.6-T2.8)
+- **TIER 3 (CI):** GitHub Actions optimization for version tags (T3.1-T3.3)
+- **TIER 4 (QA):** Parity benchmark design & execution (T4.1-T4.2)
+- **TIER 5 (Optional):** Team expansion as needed
+
+Estimated scope: ~40-50 story points across 5 weeks.
+
+Open questions resolved:
+- **CI Strategy:** Approved Option A (NuGet/build caching, 15-20% minute savings, low risk)
+- **Mini Monitor Height:** Approved 310px increase to accommodate sparklines
+- **Theme Support:** Approved as Phase 2b addition (light/dark/system)
+
+---
+
+### Decision: CI Optimization Recommendation
+**Author:** Tank (Platform Developer)
+**Date:** 2026-04-25
+**Status:** Approved
+
+GitHub Actions workflow optimization for version tags:
+- Current cost: ~11-12 billing minutes per release (windows-latest)
+- **Approved approach:** Option A — Aggressive NuGet & build output caching
+- Expected savings: 1-2 minutes per release (15-20% reduction)
+- Risk assessment: Low (standard practice, minimal cache invalidation)
+- Implementation effort: 15 minutes
+- Next: Implement after TIER 1 completion
+
+---
+
+### Decision: Squad State Consolidation
+**Author:** Tank (Platform Developer)
+**Date:** 2026-04-25
+**Status:** Approved
+
+All squad state successfully consolidated to `feature/sprint-improvements`:
+- `.squad/decisions/` merged
+- `.squad/agents/*/history.md` updated with learnings
+- `.gitattributes` updated with `merge=union` drivers for append-only files
+- PII/credentials verification: **CLEAN**
+- Multi-machine development ready for main branch sync
+
+---
+
+### Decision: QA Parity Benchmark Framework
+**Author:** Switch (Quality Engineer)
+**Date:** 2026-04-25
+**Status:** Ready for Execution
+
+Comprehensive benchmark plan designed covering 13 realistic test scenarios:
+- Normal workflows: monitor status, pull metrics, view resources
+- Edge cases: no Ollama, GPU missing, network lag, rapid state changes
+- Configuration changes: settings update, theme switching
+
+Measurement thresholds:
+- CPU: ±2%
+- Model count: ±1%
+- Response times: <5s
+
+Recommendation: Execute after Trinity completes Phase 2b improvements (3-5 day delay) for before/after delta capture. Fallback: run baseline immediately if schedule slips.
+
+---
+
+### Decision: Documentation Audit & Corrections
+**Author:** Morpheus (Documentation Lead)
+**Date:** 2026-04-25
+**Status:** Completed
+
+Audit findings:
+- No MCP tool overstatement detected (false positive)
+- No "wake-up" feature references (false positive)
+- **Real issue found & corrected:** `docs/configuration.md` listed Phase 2+ CLI commands (`high-cpu-threshold`, `high-memory-threshold`, `high-gpu-threshold`) as Phase 1 features
+- Correction: Removed non-existent commands, clarified Phase 1 CLI supports only endpoint and refresh-interval
+
+Impact: Low (internal docs, no customer-facing impact from correction)
+
+---
+
+### Decision: Mini Monitor UI Research & Design
+**Author:** Trinity (Desktop Developer)
+**Date:** 2026-04-25
+**Status:** Design Complete, Implementation Ready
+
+Comprehensive research on mini monitor improvements:
+- **In-use model indicator:** Data available via `OllamaModelSnapshot.ExpiresAt` property (null/future = active). Implement green bullet styling, no backend changes needed.
+- **Usage charts:** Recommend Canvas-based sparklines (no external dependencies, keeps Phase 1 simplicity intact). 30-sample rolling window, lightweight rendering.
+- **App icon integration:** Reuse existing tray icon assets (16×16 px), simple XAML placement
+- **Always-on-top relocation:** Remove header TextBlock, add to footer status bar (frees ~25px vertical space)
+- **Font sizing:** Increase model labels 12px → 14px
+- **Details window polish:** Match dark theme, improved spacing/padding, add app icon
+
+Implementation sequence:
+- **Phase 2a (6 hrs, quick wins):** Move always-on-top, increase fonts, add icon, implement in-use indicator
+- **Phase 2b (10 hrs, advanced):** Build history buffer, Canvas sparklines, polish, test rendering performance
+
+No blockers. No Tank dependencies. No Switch approval needed (no external dependencies).
+
+---
+
 ## Governance
 
 - All meaningful changes require team consensus

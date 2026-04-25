@@ -160,7 +160,7 @@ When GPU utilization exceeds this threshold, the tray icon turns orange.
 
 ### Option 1: CLI Commands
 
-Use `ollamamon config` commands:
+In Phase 1, you can use `ollamamon config` commands to manage the endpoint and refresh interval:
 
 ```bash
 # View current configuration
@@ -172,18 +172,11 @@ ollamamon config set endpoint http://192.168.1.100:11434
 # Change refresh interval to 5 seconds
 ollamamon config set refresh-interval 5
 
-# Change CPU threshold to 70%
-ollamamon config set high-cpu-threshold 70
-
-# Change memory threshold to 8 GB
-ollamamon config set high-memory-threshold 8
-
-# Change GPU threshold to 90%
-ollamamon config set high-gpu-threshold 90
-
 # Reset to default settings
 ollamamon config reset
 ```
+
+**Note:** To change thresholds, GPU metrics, or disk metrics settings, use Option 2 (direct file edit) below.
 
 ### Option 2: Direct File Edit
 

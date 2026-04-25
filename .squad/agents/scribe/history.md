@@ -13,4 +13,7 @@ Agent Scribe initialized and ready for work.
 
 ## Learnings
 
-Initial setup complete.
+- Sprint 2026-04-25: Merged 5 phase-2 decisions (CI, UI, QA, docs, squad state)
+- Team coordination: 5 agents (Neo, Trinity, Tank, Switch, Morpheus) + Scribe + Ralph
+- Decision merge patterns: Prefer append-only, maintain chronological order
+
