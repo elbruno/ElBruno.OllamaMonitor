@@ -11,6 +11,7 @@
         MinHeight="480"
         ResizeMode="CanResize"
         ShowInTaskbar="True"
+        Icon="Assets/TrayIcons/tray-green.ico"
         WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
