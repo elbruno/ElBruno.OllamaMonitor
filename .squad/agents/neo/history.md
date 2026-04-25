@@ -24,3 +24,16 @@
 - **Team outcomes:** Tank delivered platform, Trinity delivered WPF integration, Morpheus delivered all documentation, Switch approved for private release.
 - **Next: Phase 2** — DI container, MVVM framework, unit tests, logging framework, remote monitoring.
 
+### 2025-01-24 — Sparkline Persistence Fix
+
+- **Problem:** Mini monitor window sparklines invisible because model metrics History was lost on each refresh cycle.
+- **Root cause:** `MainWindowViewModel.ApplySnapshot()` cleared and rebuilt the Models collection with fresh `OllamaModelSnapshot` instances every 2 seconds, destroying the `History` objects that accumulate metrics over time.
+- **Solution:** Implemented persistent model cache (`Dictionary<string, OllamaModelSnapshot>`) in MainWindowViewModel:
+  - Added `_modelCache` field to store models by name across refresh cycles
+  - Created `GetOrUpdateModel()` helper that reuses existing cached models (preserving History) or creates new ones
+  - Refactored `ApplySnapshot()` to populate Models collection from cache instead of creating fresh instances
+  - Added automatic cleanup of stale models no longer in API response
+- **Key insight:** C# record `with` syntax preserves object references for properties not explicitly overridden, so updating cached models with `existingModel with { ExpiresAt = ... }` keeps the same History instance alive.
+- **Verification:** Model loaded with `ollama run llama3.2:latest`, metrics accumulate across 2-second refresh cycles, sparklines render with visible data traces after 10-15 seconds.
+- **Files modified:** `src/ElBruno.OllamaMonitor/ViewModels/MainWindowViewModel.cs`
+
