@@ -13,6 +13,18 @@ Phase 1 validation framework established and approved:
 
 ## Learnings
 
+### 2026-04-28 — Smoke-Plan-as-Deliverable Pattern for WPF Features
+- **Pattern:** Instead of post-implementation ad-hoc testing, produce **comprehensive manual smoke test plan** as *deliverable* before or immediately after feature merge
+- **Benefits:** 
+  - Clarifies expected behavior for developers during implementation (ambiguities surface early)
+  - Provides executable checklist for QA (15–20 min runtime per feature)
+  - Documents edge cases, validation rules, concurrency semantics in one place
+  - Captures "NEEDS CLARIFICATION" items as formal blockers for sign-off
+- **Structure:** Grouped by user workflow (Tray Menu, Read-Only Fields, Editable Fields, Validation, CLI Parity, Regression Checks, Build Semantics)
+- **Key elements:** Checkbox format for each test, expected outcomes, verification steps, appendix with test data
+- **Outcome:** `.squad/decisions/inbox/switch-settings-smoke-plan.md` created; ready for Trinity + Tank to execute post-Phase 2a/2b merge. Flagged 3 clarifications for Neo/Trinity before sign-off.
+- **Recommendation:** Apply this pattern to all Phase 2 UI features (Mini Monitor improvements, Details window polish, Theme support).
+
 ### 2026-04-27 — Tray Double-Click Default Updated
 - Trinity updated systray icon double-click to open MiniMonitorWindow by default (TrayIconService.cs line 50). Phase 2a quick-win, build verified. Aligns Mini Monitor as primary interface.
 

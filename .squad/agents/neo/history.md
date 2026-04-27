@@ -2,6 +2,10 @@
 
 ## Learnings
 
+### 2026-04-28 — Settings Window Design Spec (Phase 2a + 2b)
+
+**Spec issued:** `.squad/decisions/inbox/neo-settings-window-spec.md` — Complete implementation blueprint for Trinity (UI/window lifecycle) and Tank (validation) running in parallel. Open question resolved: RefreshIntervalSeconds changes require restart (v1); live reload deferred to Phase 2b+ as simpler path per Charter.
+
 ### 2026-04-28 — Settings UX Architecture Decision
 
 **Analysis requested:** Pros/cons of adding Settings entry to tray context menu + dedicated Settings form.

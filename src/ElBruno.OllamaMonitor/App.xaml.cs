@@ -8,6 +8,7 @@ using ElBruno.OllamaMonitor.Helpers;
 using ElBruno.OllamaMonitor.Ollama;
 using ElBruno.OllamaMonitor.Services;
 using ElBruno.OllamaMonitor.ViewModels;
+using ElBruno.OllamaMonitor.Windows;
 
 namespace ElBruno.OllamaMonitor;
 
@@ -22,6 +23,7 @@ public partial class App : System.Windows.Application
     private TrayIconService? _trayIconService;
     private MainWindow? _mainWindow;
     private MiniMonitorWindow? _miniMonitorWindow;
+    private SettingsWindow? _settingsWindow;
     private MainWindowViewModel? _mainWindowViewModel;
 
     protected override async void OnStartup(StartupEventArgs e)
@@ -59,6 +61,8 @@ public partial class App : System.Windows.Application
         _mainWindow?.Close();
         _miniMonitorWindow?.PrepareForExit();
         _miniMonitorWindow?.Close();
+        _settingsWindow?.PrepareForExit();
+        _settingsWindow?.Close();
         _httpClient?.Dispose();
         _shutdownTokenSource.Cancel();
         _shutdownTokenSource.Dispose();
@@ -81,6 +85,7 @@ public partial class App : System.Windows.Application
 
         _mainWindow = new MainWindow();
         _miniMonitorWindow = new MiniMonitorWindow();
+        _settingsWindow = new SettingsWindow(settingsService);
         _mainWindowViewModel = new MainWindowViewModel(
             statusService,
             settingsService,
@@ -98,7 +103,8 @@ public partial class App : System.Windows.Application
             _mainWindowViewModel,
             settingsService,
             diagnostics,
-            ExitApplication);
+            ExitApplication,
+            ShowSettingsWindow);
 
         _refreshTimer = new DispatcherTimer
         {
@@ -126,6 +132,19 @@ public partial class App : System.Windows.Application
     {
         _mainWindow?.PrepareForExit();
         Shutdown();
+    }
+
+    public void ShowSettingsWindow()
+    {
+        if (_settingsWindow is null)
+            return;
+
+        if (!_settingsWindow.IsVisible)
+        {
+            _settingsWindow.Show();
+        }
+
+        _settingsWindow.Activate();
     }
 
     private void RegisterGlobalExceptionHandlers(DiagnosticsLogService diagnostics)

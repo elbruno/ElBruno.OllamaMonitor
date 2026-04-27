@@ -23,6 +23,31 @@
 
 ## Learnings
 
+### 2026-04-28 — Settings File Auto-Creation Verification
+
+- Bruno requested: "if no setting is available create one with the default values (the ones that we are using now)"
+- **Behavior already present:** `AppSettingsService.LoadAsync()` lines 18-23 already implements this requirement
+- When `%LOCALAPPDATA%\ElBruno\OllamaMonitor\settings.json` does not exist, LoadAsync:
+  1. Creates `new AppSettings()` with defaults from property initializers (AppSettings.cs lines 5-13)
+  2. Calls `SaveAsync()` to write indented JSON to disk (camelCase, WriteIndented=true)
+  3. Returns defaults instance
+- **No code changes needed** — requirement satisfied since Phase 1 implementation
+- JSON deserializer config: System.Text.Json with PropertyNamingPolicy.CamelCase, supports missing keys gracefully (defaults applied via property initializers)
+- Build status: ✅ Success (dotnet build ElBruno.OllamaMonitor.sln)
+- File/methods verified: `Configuration\AppSettingsService.cs` LoadAsync (lines 14-44), SaveAsync (lines 52-59), AppSettings.cs (lines 3-14)
+
+### 2026-04-28 — Settings Validators Implementation
+
+- Created `Configuration\SettingsValidator.cs` with two pure static validation methods per Neo's spec (section 4)
+- `ValidateEndpoint(string endpoint)` — Rejects null/whitespace, requires valid http(s) URL via `Uri.TryCreate`, tolerates trailing slash
+- `ValidateRefreshInterval(int seconds)` — Enforces range 1-60 seconds inclusive
+- Wired validators into CLI `CliCommandRunner.cs` for both `config set endpoint` and `config set refresh-interval` commands
+- **CLI bug fixed:** Previously CLI saved invalid settings without validation (real bug, not hypothetical)
+- Validators return errors to console stderr and exit code 1 on validation failure, preventing invalid values from persisting
+- **Reload-before-save pattern verified:** `AppSettingsService.UpdateEndpointAsync` and `UpdateRefreshIntervalAsync` already call `LoadAsync()` before saving (lines 68-78) — no changes needed, pattern already correct per Neo's spec section 5
+- Trinity handoff ready: validator class location `ElBruno.OllamaMonitor.Configuration.SettingsValidator`, exact method signatures documented in decision file
+- Build status: ✅ Success (dotnet build ElBruno.OllamaMonitor.sln)
+
 ### 2026-04-27 — Tray Double-Click Default Updated
 - Trinity updated systray icon double-click to open MiniMonitorWindow by default (TrayIconService.cs line 50). Phase 2a quick-win, build verified. Aligns Mini Monitor as primary interface.
 

@@ -2,6 +2,9 @@
 
 ## Session Notes
 
+### 2026-04-28 — Settings Window UI Feature Shipped (Phase 2a + 2b)
+- Settings window with tray menu access shipped: SettingsWindow.xaml/.cs displays all 9 AppSettings; Endpoint + RefreshIntervalSeconds editable with validation; tray menu has new "Settings…" item. Build verified. Team will update docs/troubleshooting.md with CLI+GUI concurrency guidance.
+
 ### 2026-04-28 — Settings UX Architecture & Troubleshooting Documentation Note
 
 **Context:** Neo completed Settings UX architecture analysis. Recommendation approved: do both tray menu entry + dedicated Settings form.

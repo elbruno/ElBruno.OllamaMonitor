@@ -16,6 +16,7 @@ public sealed class TrayIconService : IDisposable
     private readonly AppSettingsService _settingsService;
     private readonly DiagnosticsLogService _diagnostics;
     private readonly Action _exitAction;
+    private readonly Action _showSettingsWindow;
     private readonly NotifyIcon _notifyIcon;
     private readonly ToolStripMenuItem _toggleDetailsWindowMenuItem;
     private readonly ToolStripMenuItem _toggleMiniWindowMenuItem;
@@ -27,7 +28,8 @@ public sealed class TrayIconService : IDisposable
         MainWindowViewModel viewModel,
         AppSettingsService settingsService,
         DiagnosticsLogService diagnostics,
-        Action exitAction)
+        Action exitAction,
+        Action showSettingsWindow)
     {
         _mainWindow = mainWindow;
         _miniMonitorWindow = miniMonitorWindow;
@@ -35,6 +37,7 @@ public sealed class TrayIconService : IDisposable
         _settingsService = settingsService;
         _diagnostics = diagnostics;
         _exitAction = exitAction;
+        _showSettingsWindow = showSettingsWindow;
         _trayIcons = LoadTrayIcons(diagnostics);
 
         _toggleDetailsWindowMenuItem = new ToolStripMenuItem("Show Details", null, (_, _) => ToggleDetailsWindowVisibility());
@@ -53,6 +56,7 @@ public sealed class TrayIconService : IDisposable
         [
             _toggleDetailsWindowMenuItem,
             _toggleMiniWindowMenuItem,
+            new ToolStripMenuItem("Settings…", null, (_, _) => _showSettingsWindow()),
             new ToolStripMenuItem("Refresh", null, async (_, _) => await _viewModel.RefreshAsync(CancellationToken.None)),
             new ToolStripMenuItem("Copy Status", null, (_, _) => _viewModel.CopyStatusCommand.Execute(null)),
             new ToolStripMenuItem("Open Ollama API", null, (_, _) => _viewModel.OpenEndpointCommand.Execute(null)),

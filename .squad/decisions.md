@@ -256,6 +256,147 @@ Updated `TrayIconService.cs` line 50 to call `ShowMiniMonitorWindow()` instead o
 
 ---
 
+### Decision: Settings Window Design Specification (Phase 2a + 2b)
+
+**Author:** Neo (Lead Architect)  
+**Date:** 2026-04-28  
+**Status:** Implemented  
+
+**Specification:**
+- **Phase 2a (Read-only display):** SettingsWindow displays all 9 AppSettings keys; Endpoint + RefreshIntervalSeconds editable; remaining 7 fields read-only
+- **File layout:** `Windows/SettingsWindow.xaml` + `SettingsWindow.xaml.cs`; namespace `ElBruno.OllamaMonitor`
+- **Tray menu:** Add "Settings…" between "Show Mini Monitor" and "Refresh"; use Action delegate to avoid tight coupling
+- **Window UX:** Single-column form, 500×580px resizable, sections: Connection, Application Behavior, Metrics Collection, Alert Thresholds
+- **Buttons:** Save, Cancel, Reset to Defaults; footer: "⚠ Restart required for changes to take effect"
+- **Validation contract:** ValidateEndpoint (empty check, URI parse, http/https scheme), ValidateRefreshInterval (range 1–60 seconds)
+- **Save flow (last-write-wins):** LoadAsync → apply edits → SaveAsync (prevents CLI overwrites)
+- **Restart requirement:** Phase 2a: all settings; Phase 2b+: selective reload (stretch)
+- **Out of scope Phase 2a:** Reachability test, live reload, endpoint reachability button, per-field restart badges
+
+**Implementation outcomes:**
+- ✅ Trinity created SettingsWindow (XAML + CodeBehind)
+- ✅ Tank created SettingsValidator for centralized validation
+- ✅ CLI integrated validation (bug fix: previously accepted invalid values)
+- ✅ Build succeeded (0 errors)
+
+---
+
+### Decision: Settings Window Implementation (Trinity)
+
+**Author:** Trinity (Desktop Developer)  
+**Date:** 2026-04-28  
+**Status:** Shipped  
+
+**Delivered:**
+- `Windows/SettingsWindow.xaml` (184 lines): Single-column form, all 9 fields visible, editable TextBox for Endpoint + RefreshIntervalSeconds, read-only controls for Tier-2 fields
+- `Windows/SettingsWindow.xaml.cs` (195 lines): Form logic, Save/Cancel/Reset handlers, inline validators (TODO for Tank's SettingsValidator)
+- Modified `Services/TrayIconService.cs`: Added "Settings…" menu item, pass Action delegate
+- Modified `App.xaml.cs`: Lifecycle management (singleton pattern), ShowSettingsWindow method, OnExit cleanup
+- Validation: Inline ValidateEndpoint and ValidateRefreshInterval implemented (TODO markers for integration)
+- Last-write-wins pattern: SaveButton_Click implements LoadAsync → merge → SaveAsync
+
+**Build status:** ✅ Success (0 errors, 0 warnings, 2.5s)
+
+**Phase 2a complete:** Settings window with tray menu access, read-only Tier-2 display, editable Endpoint + RefreshIntervalSeconds with validation
+
+---
+
+### Decision: Centralized Settings Validators (Tank)
+
+**Author:** Tank (Platform Developer)  
+**Date:** 2026-04-28  
+**Status:** Shipped  
+
+**Delivered:**
+- `Configuration/SettingsValidator.cs`: Pure static validators (ValidateEndpoint, ValidateRefreshInterval)
+- Modified `Cli/CliCommandRunner.cs`: Validation enforcement on `config set` commands (bug fix: CLI now rejects invalid values)
+- Verified reload-before-save pattern already correct in AppSettingsService.UpdateEndpointAsync / UpdateRefreshIntervalAsync
+
+**Validators:**
+- `ValidateEndpoint(string endpoint)`: Empty check, URI parse (KindAbsolute), http/https scheme requirement
+- `ValidateRefreshInterval(int seconds)`: Range check 1–60 seconds inclusive
+
+**CLI bug fix:** Previously CLI saved settings without validation; now exits with code 1 on invalid input, displays error to stderr
+
+**Build status:** ✅ Success (0 errors, 0 warnings, 4.6s)
+
+**Architecture:** Single source of truth for validation; CLI + GUI parity guaranteed
+
+---
+
+### Decision: Settings File Auto-Creation (No Change Required)
+
+**Author:** Tank (Platform Developer)  
+**Date:** 2026-04-28  
+**Status:** Verified  
+
+**Finding:** AppSettingsService.LoadAsync already creates `settings.json` with default values when file missing.
+
+**Evidence:** `LoadAsync()` (lines 18-23) checks if file exists; if not, instantiates `new AppSettings()`, calls `SaveAsync()` to write defaults to disk, returns defaults object.
+
+**Status:** ✅ Already implemented (no code changes required)
+
+---
+
+### Decision: Settings Window Smoke Test Plan (Switch)
+
+**Author:** Switch (QA)  
+**Date:** 2026-04-28  
+**Status:** Ready for Execution  
+
+**Test coverage:** 29 manual test cases organized in 8 sections:
+1. Tray Menu & Window Launch (4 tests)
+2. Read-Only Tier-2 Fields (2 tests)
+3. Editable Fields Happy Path Phase 2b (3 tests)
+4. Editable Fields Validation Phase 2b (7 tests)
+5. Reset/Cancel Buttons (2 tests)
+6. CLI Parity & Concurrency Last-Write-Wins (3 tests)
+7. Regression Check Tray Double-Click (1 test)
+8. Build & Restart Semantics (2 tests)
+
+**Estimated duration:** 15–20 minutes
+
+**Clarifications flagged:** 3 items (Reset behavior, CLI+GUI concurrency observed behavior, MinitorWindow refresh requirement) for team confirmation before execution
+
+**Test data:** Valid/invalid Endpoint examples, RefreshIntervalSeconds boundaries
+
+**Execution protocol:** Manual execution post-Trinity + Tank merge; document pass/fail, resolve clarifications, sign-off with build # verified
+
+**Status:** ✅ Plan ready for execution
+
+---
+
+### Decision: Validator Integration (Trinity 2nd Pass)
+
+**Author:** Trinity (Desktop Developer)  
+**Date:** 2026-04-28  
+**Status:** Complete  
+
+**Refactoring:** Replaced inline ValidateEndpoint + ValidateRefreshInterval methods in SettingsWindow.xaml.cs with calls to Tank's centralized SettingsValidator.
+
+**Outcome:** Single source of truth for validation; SettingsWindow focuses on UI, validation logic delegated to SettingsValidator.cs
+
+**Build status:** ✅ Success (0 errors, 0 warnings, 2.5s)
+
+**Phase 2b validator integration:** ✅ Complete
+
+---
+
+### Decision: Architecture Verification (Tank 2nd Pass)
+
+**Author:** Tank (Platform Developer)  
+**Date:** 2026-04-28  
+**Status:** Verified  
+
+**Verification scope:**
+- Defaults-on-missing already implemented in AppSettingsService.LoadAsync ✅
+- Reload-before-save pattern already correct in UpdateEndpointAsync / UpdateRefreshIntervalAsync ✅
+- No gaps identified in Phase 2b architecture ✅
+
+**Result:** Phase 2a + 2b ready for testing; no additional backend work required
+
+---
+
 ## Governance
 
 - All meaningful changes require team consensus

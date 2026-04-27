@@ -31,11 +31,23 @@ public sealed class CliCommandRunner
                 return 0;
 
             case CliCommandKind.SetEndpoint:
+                var endpointValidation = SettingsValidator.ValidateEndpoint(command.StringValue!);
+                if (!endpointValidation.Ok)
+                {
+                    Console.Error.WriteLine($"Error: {endpointValidation.Error}");
+                    return 1;
+                }
                 await _settingsService.UpdateEndpointAsync(command.StringValue!, cancellationToken);
                 Console.WriteLine($"Updated endpoint to {command.StringValue}.");
                 return 0;
 
             case CliCommandKind.SetRefreshInterval:
+                var intervalValidation = SettingsValidator.ValidateRefreshInterval(command.IntValue!.Value);
+                if (!intervalValidation.Ok)
+                {
+                    Console.Error.WriteLine($"Error: {intervalValidation.Error}");
+                    return 1;
+                }
                 await _settingsService.UpdateRefreshIntervalAsync(command.IntValue!.Value, cancellationToken);
                 Console.WriteLine($"Updated refresh interval to {command.IntValue} second(s).");
                 return 0;
