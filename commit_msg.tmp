@@ -1,9 +1,0 @@
-Bump version to 0.7.0: Settings window with tray menu access
-
-- New SettingsWindow accessible via tray context menu
-- Editable Endpoint and RefreshIntervalSeconds with validation
-- New SettingsValidator shared by GUI and CLI (CLI bug fix)
-- Confirmed defaults-on-missing for settings.json
-- Tray double-click default opens Mini Monitor
-
-Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>

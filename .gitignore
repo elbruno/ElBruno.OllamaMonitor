@@ -21,3 +21,4 @@ obj/
 
 # Local NuGet publishing secret
 nuget elbruno.ollamamonitor.txt
+commit_msg.tmp
