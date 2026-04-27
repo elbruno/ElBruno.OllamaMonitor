@@ -2,6 +2,31 @@
 
 ## Version History
 
+### 0.7.0 — Settings Window with Tray Menu Access
+
+**Release Date:** 2026-04-27
+
+This release adds a dedicated Settings window accessible from the tray context menu, with editable connection and refresh-interval fields plus full visibility into all configurable options.
+
+#### What's New
+
+- ✅ New **Settings…** entry in the tray icon context menu
+- ✅ New `SettingsWindow` displays all 9 application settings
+- ✅ Editable: **Endpoint** and **Refresh Interval** (with inline validation)
+- ✅ Read-only display of thresholds and feature flags (editing planned for a future release)
+- ✅ New `SettingsValidator` shared between the GUI and CLI
+- ✅ **Bug fix:** the CLI now validates `config set` inputs before saving (previously accepted invalid values)
+- ✅ Confirmed: the app creates `settings.json` populated with defaults if it doesn't exist
+- ✅ Save flow uses **reload-before-save** for safe coexistence with concurrent CLI edits (last-write-wins)
+- ✅ Tray double-click default opens the Mini Monitor window
+
+#### Notes
+
+- A **restart is required** for setting changes to take effect (live reload planned for a future release)
+- The Settings window mirrors the singleton lifecycle pattern used by the existing windows
+
+---
+
 ### 0.6.0 — Enhanced UI/UX with Landing Page, Sparklines, and Theming
 
 **Release Date:** 2026-04-25
