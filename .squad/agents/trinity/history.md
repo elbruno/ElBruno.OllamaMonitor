@@ -138,3 +138,53 @@ All tasks completed successfully with no architectural constraints or dependenci
 - No errors or issues encountered during capture
 - Models were populated and ready for monitoring
 - Window icons successfully displaying in title bars (green Ollama icon)
+
+---
+
+## Tray Double-Click Behavior Update (2026-04-26)
+
+### Task: Update default tray icon double-click action
+
+**Requested by:** Bruno Capuano
+
+**Objective:** Change the system tray icon double-click behavior to open the Mini Monitor window instead of the Details (Main) window.
+
+### Implementation
+
+**File Modified:** `src/ElBruno.OllamaMonitor/Services/TrayIconService.cs`
+
+**Change:** Line 50
+- **Before:** `_notifyIcon.DoubleClick += (_, _) => ShowWindow();`
+- **After:** `_notifyIcon.DoubleClick += (_, _) => ShowMiniMonitorWindow();`
+
+### Learnings
+
+1. **Tray double-click handler location:** `TrayIconService.cs` line 50 wires the `NotifyIcon.DoubleClick` event
+2. **Window launch pattern:** Both `ShowWindow()` (lines 109-122) and `ShowMiniMonitorWindow()` (lines 124-132) follow the same pattern:
+   - Check if window is already visible; if not, call `Show()`
+   - If minimized, restore to normal state (MainWindow only has this check)
+   - Call `Activate()` to bring window to front
+3. **No configurable setting:** AppSettings.cs does not contain a tray double-click target setting—behavior is hard-coded in TrayIconService
+4. **Context menu remains unchanged:** Right-click tray menu still provides explicit "Show Details" and "Show Mini Monitor" options (lines 40-41, 54-55)
+
+### Build Verification
+
+✅ **Build status:** Success (0 errors, 0 warnings)
+- Command: `dotnet build ElBruno.OllamaMonitor.sln`
+- Duration: 4.5s
+- Output: Both projects compiled successfully
+
+### Manual Verification Instructions
+
+To verify the change:
+1. Launch the application (tray icon appears in system tray)
+2. **Double-click** the tray icon
+3. **Expected result:** MiniMonitorWindow opens (compact view with model list and metrics)
+4. **Previous behavior:** MainWindow opened (detailed view)
+5. Right-click context menu still provides explicit access to both windows
+
+### Architecture Notes
+
+- TrayIconService maintains references to **both** windows (MainWindow and MiniMonitorWindow)
+- The double-click is a shortcut action; explicit window toggles remain available in the context menu
+- This aligns with the Phase 2 focus on Mini Monitor as the primary user-facing view

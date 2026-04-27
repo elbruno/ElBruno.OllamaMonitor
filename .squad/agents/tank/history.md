@@ -2,7 +2,10 @@
 
 ## Learnings
 
-- Phase 1 uses a two-project packaging split: `src\ElBruno.OllamaMonitor` is the Windows-first .NET 10 WPF desktop app, and `src\ElBruno.OllamaMonitor.Tool` is the `net10.0` global tool shim that owns `ollamamon`.
+### 2026-04-27 — Tray Double-Click Default Updated
+- Trinity updated systray icon double-click to open MiniMonitorWindow by default (TrayIconService.cs line 50). Phase 2a quick-win, build verified. Aligns Mini Monitor as primary interface.
+
+### Phase 1 uses a two-project packaging split: `src\ElBruno.OllamaMonitor` is the Windows-first .NET 10 WPF desktop app, and `src\ElBruno.OllamaMonitor.Tool` is the `net10.0` global tool shim that owns `ollamamon`.
 - .NET SDK tool packaging does not support `UseWPF`, `UseWindowsForms`, or `-windows` TFMs directly, so the tool package is built first and then enriched with the published desktop payload via `build\Pack-Tool.ps1` and `build\Inject-DesktopPayload.ps1`.
 - Shared CLI/config source files are linked into the tool project from the desktop project (`AppPaths`, `Cli`, `Configuration`, `Diagnostics`, `Interop`) to keep config behavior aligned across tray and CLI entry points.
 - Core Phase 1 service boundaries live under `src\ElBruno.OllamaMonitor\Ollama`, `...\Services`, and `...\Models`; the tray/UI layer is intentionally isolated in `App.xaml.cs`, `TrayIconService`, `MainWindow`, and `ViewModels`.

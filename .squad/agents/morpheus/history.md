@@ -2,6 +2,9 @@
 
 ## Session Notes
 
+### 2026-04-27 — Tray Double-Click Default Updated
+- Trinity updated systray icon double-click to open MiniMonitorWindow by default (TrayIconService.cs line 50). Phase 2a quick-win, build verified. Aligns Mini Monitor as primary interface. No documentation changes needed (user-facing behavior, no public API impact).
+
 ### Phase 1 Documentation Completion (2026-04-24)
 
 **Completed deliverables:**

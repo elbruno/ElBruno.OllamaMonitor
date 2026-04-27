@@ -203,6 +203,15 @@ No blockers. No Tank dependencies. No Switch approval needed (no external depend
 
 ---
 
+### Decision: Tray Double-Click Opens Mini Monitor
+**Author:** Trinity (Desktop Developer)
+**Date:** 2026-04-26
+**Status:** Implemented
+
+Updated `TrayIconService.cs` line 50 to call `ShowMiniMonitorWindow()` instead of `ShowWindow()` on tray icon double-click events. Mini Monitor is now the default quick-access window from the tray; context menu remains unchanged with explicit access to both windows. Rationale: user preference + Phase 2 focus on Mini Monitor as primary interface. Build verified: ✅ Success.
+
+---
+
 ## Governance
 
 - All meaningful changes require team consensus

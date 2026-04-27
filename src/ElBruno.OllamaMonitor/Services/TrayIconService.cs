@@ -47,7 +47,7 @@ public sealed class TrayIconService : IDisposable
             ContextMenuStrip = new ContextMenuStrip()
         };
 
-        _notifyIcon.DoubleClick += (_, _) => ShowWindow();
+        _notifyIcon.DoubleClick += (_, _) => ShowMiniMonitorWindow();
         _notifyIcon.ContextMenuStrip.Opening += (_, _) => RefreshMenuText();
         _notifyIcon.ContextMenuStrip.Items.AddRange(
         [
