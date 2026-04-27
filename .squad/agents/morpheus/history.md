@@ -5,6 +5,11 @@
 ### 2026-04-27 — Tray Double-Click Default Updated
 - Trinity updated systray icon double-click to open MiniMonitorWindow by default (TrayIconService.cs line 50). Phase 2a quick-win, build verified. Aligns Mini Monitor as primary interface. No documentation changes needed (user-facing behavior, no public API impact).
 
+### 2026-04-27 — Q&A: Non-Default Ollama Endpoint Configuration
+- **Documentation-worthy Q&A:** User asked how to configure Ollama running on a non-default port (Tank/Platform developer answered). Answer: Use `ollamamon config set endpoint <url>` or edit `%LOCALAPPDATA%\ElBruno\OllamaMonitor\settings.json`. Restart required.
+- **Recommendation:** README or docs/configuration.md should include a dedicated section *"Configuring a Non-Default Ollama Endpoint"* with CLI examples. Current docs reference default endpoint but lack clear guidance for custom ports.
+- **Priority:** Low (covered in config docs but not prominent); consider for next doc refresh.
+
 ### Phase 1 Documentation Completion (2026-04-24)
 
 **Completed deliverables:**
