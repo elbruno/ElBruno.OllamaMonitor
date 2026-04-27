@@ -1,5 +1,26 @@
 # Tank History
 
+## Phase 2c: Settings UX Implementation (2026-04-28 planned)
+
+### Upcoming Ownership: Tank Validation/AppSettingsService Extensions
+
+**Context:** Neo completed Settings UX architecture analysis. Recommendation approved: do both tray menu entry + dedicated Settings form, phased across 2a/2b.
+
+**Tank responsibilities (Phase 2a/2b):**
+- Extend AppSettingsService with validation logic for Tier 1 editable fields (Endpoint format, RefreshIntervalSeconds range 1–60s)
+- Optional: Reachability test for Endpoint (Phase 2b stretch)
+- Ensure all Update* methods reload from disk before saving (already implemented; verify no regression)
+- Verify no exceptions escape Save handler in Settings form
+- Phase 2a: Format validation only; Phase 2b: Optional advanced validation (reachability, selective reload semantics)
+
+**Trinity/Switch responsibilities:** Window UI/menu wiring, build/smoke test verification.
+
+**Decision file:** `.squad/decisions.md` (Settings UX Architecture section).
+
+**Key decision:** Last-write-wins for CLI + GUI settings precedence. Both writers already reload before save. Document in troubleshooting.md.
+
+---
+
 ## Learnings
 
 ### 2026-04-27 — Tray Double-Click Default Updated

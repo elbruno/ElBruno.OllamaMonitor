@@ -2,6 +2,23 @@
 
 ## Session Notes
 
+### 2026-04-28 — Settings UX Architecture & Troubleshooting Documentation Note
+
+**Context:** Neo completed Settings UX architecture analysis. Recommendation approved: do both tray menu entry + dedicated Settings form.
+
+**Morpheus action item (Phase 2a/2b):**
+- Update docs/troubleshooting.md with new section: *"Settings Changed Via CLI and GUI Simultaneously"*
+  - Explain last-write-wins behavior
+  - Recommend: Avoid editing settings from both interfaces concurrently
+  - Note: Both code paths already reload from disk before saving (safe pattern)
+  - Example: If CLI writes while GUI save pending, last writer's settings persist
+
+**Decision context:** No file locking Phase 2 (overkill; concurrent writes rare). Both writers reload before save. Documented approach acceptable.
+
+**Documentation philosophy:** Practical, developer-focused, acknowledges edge cases.
+
+---
+
 ### 2026-04-27 — Tray Double-Click Default Updated
 - Trinity updated systray icon double-click to open MiniMonitorWindow by default (TrayIconService.cs line 50). Phase 2a quick-win, build verified. Aligns Mini Monitor as primary interface. No documentation changes needed (user-facing behavior, no public API impact).
 

@@ -210,6 +210,50 @@ No blockers. No Tank dependencies. No Switch approval needed (no external depend
 
 Updated `TrayIconService.cs` line 50 to call `ShowMiniMonitorWindow()` instead of `ShowWindow()` on tray icon double-click events. Mini Monitor is now the default quick-access window from the tray; context menu remains unchanged with explicit access to both windows. Rationale: user preference + Phase 2 focus on Mini Monitor as primary interface. Build verified: ✅ Success.
 
+### Decision: Settings UX Architecture (Tray Menu + Settings Form)
+
+**Author:** Neo (Lead Architect)  
+**Date:** 2026-04-28  
+**Status:** Approved for Phase 2 Implementation
+
+**Analysis:** Tray context menu "Settings…" entry vs. dedicated Settings form. Both complementary, both feasible.
+
+**Recommendation:** Do both, sequenced.
+
+**Phase 2a (3 PT, Quick-Win):**
+- Trinity: Add ToolStripMenuItem("Settings…") to TrayIconService, create SettingsWindow.xaml (read-only display), implement ShowSettingsWindow() in App.xaml.cs
+- Display: Endpoint, Refresh Interval, GPU/Disk flags, CPU/Memory/GPU thresholds (all read-only)
+- Save handler: Async no-op spinner for Phase 2a
+
+**Phase 2b (3–4 PT, Advanced):**
+- Tier 1 editable (Endpoint + RefreshIntervalSeconds): Format validation, numeric spinner range 1–60s
+- Tier 2 read-only Phase 2b (StartMinimizedToTray, EnableGpuMetrics, EnableDiskMetrics, thresholds)
+- Validation: Endpoint format + optional reachability test (Phase 2b stretch)
+- Restart semantics: All require restart Phase 2a; selective reload Phase 2b+
+
+**Settings precedence (CLI + GUI coexistence):**
+- Rule: Last-write-wins
+- Prevention: Both writers already reload from disk before saving (AppSettingsService)
+- Documentation: Add to troubleshooting.md: avoid concurrent CLI + GUI writes
+- Why no file locking? Overkill Phase 2; concurrent writes rare in practice
+
+**Ownership & responsibilities:**
+- **Trinity:** SettingsWindow.xaml, tray menu integration, window lifecycle, single-instance enforcement
+- **Tank:** Validation logic, AppSettingsService method calls, ensure reload-before-save
+- **Switch:** Build verification, smoke tests, concurrent CLI+GUI verification
+
+**Technical consensus:**
+- Threading: async/await pattern proven in MainWindowViewModel
+- Window lifecycle: Follow MainWindow/MiniMonitorWindow patterns
+- Architecture clean, no new dependencies, no blockers
+
+**Approval criteria:**
+- ✅ Feasible Phase 2 addition (5–7 PT total)
+- ✅ Windows standard (tray menu discovery)
+- ✅ Reduces support burden (removes CLI dependency for GUI users)
+- ✅ Precedence question resolved (last-write-wins acceptable)
+- ✅ Phased approach prevents overload (2a quick-win, 2b polish)
+
 ---
 
 ## Governance

@@ -2,6 +2,21 @@
 
 ## Learnings
 
+### 2026-04-28 — Settings UX Architecture Decision
+
+**Analysis requested:** Pros/cons of adding Settings entry to tray context menu + dedicated Settings form.
+
+**Key findings:**
+- **Tray menu entry:** Low friction (one menu item), essential for discoverability (Windows standard). Meaningless without Settings form.
+- **Settings form:** High ROI (removes CLI dependency), feasible Phase 2 addition (~5–8 story points). Validation, endpoint testing, and restart semantics are mitigatable.
+- **Settings precedence:** CLI (`ollamamon config set`) and GUI (form) both write settings.json. Last-write-wins is acceptable; no file locking needed. Require all writers to reload before save (already true in AppSettingsService).
+- **Recommendation:** Do both. Phase 2a: menu + read-only viewer. Phase 2b: editable form with validation.
+- **Scope:** Tier 1 (Endpoint, RefreshIntervalSeconds) editable Phase 2a. Tier 2 (thresholds, flags) read-only Phase 2a, editable Phase 2b. Cost: ~1–2 PT for 2a, ~3–4 PT for 2b.
+
+**Precedence & concurrency decision:** Last-write-wins is fine. Both writers must reload from disk before saving (standard pattern, no changes needed to AppSettingsService). Document in troubleshooting.md: avoid concurrent CLI + GUI writes.
+
+**Decision file:** `.squad/decisions/inbox/neo-settings-ux-recommendation.md`
+
 ### 2026-04-27 — Tray Double-Click Default Updated
 - Trinity updated systray icon double-click to open MiniMonitorWindow by default (TrayIconService.cs line 50). Phase 2a quick-win, build verified. Aligns Mini Monitor as primary interface.
 

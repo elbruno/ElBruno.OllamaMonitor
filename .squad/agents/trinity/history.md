@@ -1,5 +1,25 @@
 # Trinity — Project History
 
+## Phase 2c: Settings UX Implementation (2026-04-28 planned)
+
+### Upcoming Ownership: Trinity Window/UI/Menu Wiring
+
+**Context:** Neo completed Settings UX architecture analysis. Recommendation approved: do both tray menu entry + dedicated Settings form, phased across 2a/2b.
+
+**Trinity responsibilities (Phase 2a/2b):**
+- Add ToolStripMenuItem("Settings…") to TrayIconService.cs (before "Open Config Folder")
+- Create SettingsWindow.xaml (Phase 2a: read-only display; Phase 2b: editable Tier 1 fields)
+- Implement ShowSettingsWindow() in App.xaml.cs with single-instance semantics
+- Handle window lifecycle (show/hide, shutdown integration)
+- Async Save handler coordination (Phase 2a: no-op spinner; Phase 2b: call Tank validation methods)
+- Display layout: Tier 1 (Endpoint, RefreshIntervalSeconds) + Tier 2 (GPU/Disk flags, thresholds)
+
+**Tank/Switch responsibilities:** Validation logic extension, build/smoke test verification.
+
+**Decision file:** `.squad/decisions.md` (Settings UX Architecture section).
+
+---
+
 ## Phase 2a: Quick Wins Implementation (2026-04-26)
 
 ### Completed Tasks
