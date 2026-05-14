@@ -60,6 +60,7 @@ public sealed class TrayIconService : IDisposable
             new ToolStripMenuItem("Refresh", null, async (_, _) => await _viewModel.RefreshAsync(CancellationToken.None)),
             new ToolStripMenuItem("Copy Status", null, (_, _) => _viewModel.CopyStatusCommand.Execute(null)),
             new ToolStripMenuItem("Open Ollama API", null, (_, _) => _viewModel.OpenEndpointCommand.Execute(null)),
+            new ToolStripMenuItem("Settings", null, (_, _) => _viewModel.OpenSettingsCommand.Execute(null)),
             new ToolStripMenuItem("Open Config Folder", null, (_, _) => ProcessLauncher.Open(AppPaths.RootDirectory, _diagnostics)),
             new ToolStripSeparator(),
             new ToolStripMenuItem("Visit HomePage", null, (_, _) => OpenGitHubRepository()),

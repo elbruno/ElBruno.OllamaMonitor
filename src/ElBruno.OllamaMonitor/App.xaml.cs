@@ -56,6 +56,7 @@ public partial class App : System.Windows.Application
     protected override void OnExit(ExitEventArgs e)
     {
         _refreshTimer?.Stop();
+        _mainWindowViewModel?.Dispose();
         _trayIconService?.Dispose();
         _mainWindow?.PrepareForExit();
         _mainWindow?.Close();

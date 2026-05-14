@@ -17,7 +17,9 @@ public sealed class MainWindowViewModel : ViewModelBase
     private readonly Action<string> _openUrl;
     private readonly SemaphoreSlim _refreshGate = new(1, 1);
     private readonly Dictionary<string, OllamaModelSnapshot> _modelCache = new();
+    private readonly WindowsNotificationService _notificationService;
     private OllamaMonitorSnapshot? _latestSnapshot;
+    private OllamaMonitorState? _previousState;
 
     private string _stateText = "Starting";
     private string _endpoint = "http://localhost:11434";
@@ -53,11 +55,13 @@ public sealed class MainWindowViewModel : ViewModelBase
         _hideWindow = hideWindow;
         _copyToClipboard = copyToClipboard;
         _openUrl = openUrl;
+        _notificationService = new WindowsNotificationService(diagnostics);
 
         Models = new ObservableCollection<OllamaModelSnapshot>();
         RefreshCommand = new AsyncRelayCommand(() => RefreshAsync(CancellationToken.None));
         CopyStatusCommand = new RelayCommand(CopyStatus);
         OpenEndpointCommand = new RelayCommand(OpenEndpoint);
+        OpenSettingsCommand = new AsyncRelayCommand(OpenSettingsAsync);
         HideWindowCommand = new RelayCommand(() => _hideWindow());
     }
 
@@ -70,6 +74,8 @@ public sealed class MainWindowViewModel : ViewModelBase
     public RelayCommand CopyStatusCommand { get; }
 
     public RelayCommand OpenEndpointCommand { get; }
+
+    public AsyncRelayCommand OpenSettingsCommand { get; }
 
     public RelayCommand HideWindowCommand { get; }
 
@@ -201,7 +207,10 @@ public sealed class MainWindowViewModel : ViewModelBase
         try
         {
             var settings = await _settingsService.LoadAsync(cancellationToken);
+            _notificationService.SetDebounceSeconds(settings.NotificationDebounceSeconds);
+            
             var snapshot = await _statusService.GetSnapshotAsync(settings, cancellationToken);
+            CheckAndNotifyStateChanges(snapshot, settings);
             ApplySnapshot(snapshot);
             SnapshotUpdated?.Invoke(this, snapshot);
         }
@@ -217,6 +226,107 @@ public sealed class MainWindowViewModel : ViewModelBase
         finally
         {
             _refreshGate.Release();
+        }
+    }
+
+    private void CheckAndNotifyStateChanges(OllamaMonitorSnapshot snapshot, AppSettings settings)
+    {
+        if (!settings.EnableNotifications)
+            return;
+
+        // Notify Ollama status changes
+        if (_previousState != snapshot.State)
+        {
+            if (snapshot.State == OllamaMonitorState.NotReachable || snapshot.State == OllamaMonitorState.Error)
+            {
+                if ((settings.NotificationEvents & NotificationEventType.OllamaOffline) != 0)
+                {
+                    _notificationService.ShowNotification(
+                        NotificationEventType.OllamaOffline,
+                        "🔴 Ollama Offline",
+                        $"Ollama is no longer reachable at {snapshot.Endpoint}\nCheck the service and logs.");
+                }
+            }
+            else if (_previousState.HasValue && 
+                     (_previousState == OllamaMonitorState.NotReachable || _previousState == OllamaMonitorState.Error))
+            {
+                if ((settings.NotificationEvents & NotificationEventType.OllamaOnline) != 0)
+                {
+                    _notificationService.ShowNotification(
+                        NotificationEventType.OllamaOnline,
+                        "🟢 Ollama Online",
+                        $"Ollama is running at {snapshot.Endpoint}");
+                }
+            }
+
+            _previousState = snapshot.State;
+        }
+
+        // Notify model changes
+        if (_latestSnapshot is not null)
+        {
+            var previousModelNames = new HashSet<string>(_latestSnapshot.Models.Select(m => m.Name));
+            var currentModelNames = new HashSet<string>(snapshot.Models.Select(m => m.Name));
+
+            foreach (var newModel in currentModelNames.Except(previousModelNames))
+            {
+                if ((settings.NotificationEvents & NotificationEventType.ModelLoaded) != 0)
+                {
+                    _notificationService.ShowNotification(
+                        NotificationEventType.ModelLoaded,
+                        "📦 Model Loaded",
+                        $"Model '{newModel}' is now loaded");
+                }
+            }
+
+            foreach (var unloadedModel in previousModelNames.Except(currentModelNames))
+            {
+                if ((settings.NotificationEvents & NotificationEventType.ModelUnloaded) != 0)
+                {
+                    _notificationService.ShowNotification(
+                        NotificationEventType.ModelUnloaded,
+                        "📭 Model Unloaded",
+                        $"Model '{unloadedModel}' has been unloaded");
+                }
+            }
+        }
+
+        // Notify resource thresholds
+        if (snapshot.Resources is not null && settings.EnableGpuMetrics)
+        {
+            if (snapshot.Resources.CpuPercent > settings.HighCpuThresholdPercent)
+            {
+                if ((settings.NotificationEvents & NotificationEventType.HighCpuUsage) != 0)
+                {
+                    _notificationService.ShowNotification(
+                        NotificationEventType.HighCpuUsage,
+                        "⚠️ High CPU Usage",
+                        $"CPU usage is at {snapshot.Resources.CpuPercent:F1}% (threshold: {settings.HighCpuThresholdPercent}%)");
+                }
+            }
+
+            var memoryGb = (snapshot.Resources.MemoryBytes ?? 0) / (1024.0 * 1024.0 * 1024.0);
+            if (memoryGb > settings.HighMemoryThresholdGb)
+            {
+                if ((settings.NotificationEvents & NotificationEventType.HighMemoryUsage) != 0)
+                {
+                    _notificationService.ShowNotification(
+                        NotificationEventType.HighMemoryUsage,
+                        "⚠️ High Memory Usage",
+                        $"Memory usage is at {memoryGb:F1} GB (threshold: {settings.HighMemoryThresholdGb} GB)");
+                }
+            }
+
+            if (snapshot.Resources.GpuPercent > settings.HighGpuThresholdPercent)
+            {
+                if ((settings.NotificationEvents & NotificationEventType.HighGpuUsage) != 0)
+                {
+                    _notificationService.ShowNotification(
+                        NotificationEventType.HighGpuUsage,
+                        "⚠️ High GPU Usage",
+                        $"GPU usage is at {snapshot.Resources.GpuPercent:F1}% (threshold: {settings.HighGpuThresholdPercent}%)");
+                }
+            }
         }
     }
 
@@ -315,6 +425,20 @@ public sealed class MainWindowViewModel : ViewModelBase
         _openUrl(_latestSnapshot.Endpoint);
     }
 
+    private async Task OpenSettingsAsync()
+    {
+        var settings = await _settingsService.LoadAsync(CancellationToken.None);
+        var viewModel = new SettingsWindowViewModel(settings, _settingsService);
+        var settingsWindow = new SettingsWindow { DataContext = viewModel };
+
+        if (settingsWindow.ShowDialog() == true)
+        {
+            await viewModel.SaveAsync(CancellationToken.None);
+            _diagnostics.WriteInfo("Settings saved successfully.");
+            await RefreshAsync(CancellationToken.None);
+        }
+    }
+
     private static string BuildCompactModelsText(IReadOnlyList<OllamaModelSnapshot> models)
     {
         if (models.Count == 0)
@@ -334,4 +458,10 @@ public sealed class MainWindowViewModel : ViewModelBase
 
         return $"Models: {string.Join(Environment.NewLine, displayedModels)}";
     }
+
+    public void Dispose()
+    {
+        _notificationService?.Dispose();
+    }
 }
+
