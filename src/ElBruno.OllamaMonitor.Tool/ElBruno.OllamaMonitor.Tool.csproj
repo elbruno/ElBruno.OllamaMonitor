@@ -30,6 +30,7 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="GlobalUsings.cs" />
+    <Compile Include="Models\NotificationEventType.cs" />
     <Compile Include="..\ElBruno.OllamaMonitor\AppPaths.cs" Link="Shared\AppPaths.cs" />
     <Compile Include="..\ElBruno.OllamaMonitor\Cli\*.cs" Link="Cli\%(Filename)%(Extension)" />
     <Compile Include="..\ElBruno.OllamaMonitor\Configuration\*.cs" Link="Configuration\%(Filename)%(Extension)" />
