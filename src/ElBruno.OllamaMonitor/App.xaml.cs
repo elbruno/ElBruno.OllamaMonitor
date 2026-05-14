@@ -62,7 +62,6 @@ public partial class App : System.Windows.Application
         _mainWindow?.Close();
         _miniMonitorWindow?.PrepareForExit();
         _miniMonitorWindow?.Close();
-        _settingsWindow?.PrepareForExit();
         _settingsWindow?.Close();
         _httpClient?.Dispose();
         _shutdownTokenSource.Cancel();
@@ -86,7 +85,7 @@ public partial class App : System.Windows.Application
 
         _mainWindow = new MainWindow();
         _miniMonitorWindow = new MiniMonitorWindow();
-        _settingsWindow = new SettingsWindow(settingsService);
+        _settingsWindow = new SettingsWindow();
         _mainWindowViewModel = new MainWindowViewModel(
             statusService,
             settingsService,

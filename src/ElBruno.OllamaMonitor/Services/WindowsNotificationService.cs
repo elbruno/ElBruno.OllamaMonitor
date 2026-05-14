@@ -1,4 +1,5 @@
 using Windows.UI.Notifications;
+using Windows.Data.Xml.Dom;
 using ElBruno.OllamaMonitor.Diagnostics;
 using ElBruno.OllamaMonitor.Models;
 
@@ -54,7 +55,7 @@ public sealed class WindowsNotificationService : IDisposable
             }
 
             var toastXml = GenerateToastXml(title, message);
-            var doc = new Windows.Data.Xml.Dom.XmlDocument();
+            var doc = new XmlDocument();
             doc.LoadXml(toastXml);
 
             var toast = new ToastNotification(doc)
